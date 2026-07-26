@@ -10,7 +10,7 @@
 // correct modern approach for this.
 
 export const config = {
-  maxDuration: 60, // generous timeout; some modules (like the About section) can take a while
+  maxDuration: 180, // profile generation asks for a lot in one call (headlines, About, banner, featured, keywords/skills) and can take well over a minute; Vercel Pro supports up to 300s
 };
 
 export default async function handler(req, res) {
