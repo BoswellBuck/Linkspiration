@@ -723,6 +723,7 @@ function renderVoiceModule(){
         <textarea class="dee-notes-input" id="voice-samples-input" placeholder="Paste your first sample here...
 
 Leave a blank line, then paste your next sample..." style="min-height:160px"></textarea>
+        ${micButton('voice-samples-input')}
         <div style="display:flex;gap:10px;margin-top:12px">
           <button class="btn btn-gold" id="voice-generate-btn" style="padding:9px 16px;font-size:12.5px" onclick="generateVoiceProfile('samples')">Build My Voice Profile</button>
           <button class="btn btn-secondary" style="padding:9px 16px;font-size:12.5px" onclick="voiceUIMode='choose';render()">Back</button>
@@ -1940,11 +1941,12 @@ function renderFoundation(){
         <option value="Confident and assertive" ${i.brandVoice==='Confident and assertive'?'selected':''}>Confident and assertive</option>
         <option value="other" ${i.brandVoice==='other'?'selected':''}>Other</option>
       </select>
-      ${i.brandVoice === 'other' ? `<textarea id="f-brandvoice-other" placeholder="Describe your brand voice in your own words" oninput="saveIntakeField('brandVoiceOther', this.value)" style="margin-top:10px">${i.brandVoiceOther||''}</textarea>` : ''}
+      ${i.brandVoice === 'other' ? `<textarea id="f-brandvoice-other" placeholder="Describe your brand voice in your own words" oninput="saveIntakeField('brandVoiceOther', this.value)" style="margin-top:10px">${i.brandVoiceOther||''}</textarea>${micButton('f-brandvoice-other')}` : ''}
     </div>
     <div class="field">
       <label>What makes you different</label>
       <textarea id="f-different" placeholder="Why a client picks you over the next option" oninput="saveIntakeField('different', this.value)">${i.different||''}</textarea>
+      ${micButton('f-different')}
     </div>
 
     <div class="field">
@@ -1969,11 +1971,13 @@ function renderFoundation(){
       <label>What results can you point to?</label>
       <div class="field-hint" style="margin-top:0;margin-bottom:10px">Optional. Share any numbers, outcomes, or notable names you can reference, clients, revenue or growth figures, project outcomes, media features, speaking engagements. If you're early-stage or don't have hard numbers yet, share your strongest qualitative outcome instead (a transformation story, a specific problem you solved).</div>
       <textarea id="f-proofpoints" placeholder="e.g. Helped a client go from 200 to 3,000 profile views a month in 90 days. Spoke at the 2025 Women in Business Summit. Grew a coaching business from $0 to $40k in bookings in year one." oninput="saveIntakeField('proofPoints', this.value)">${i.proofPoints||''}</textarea>
+      ${micButton('f-proofpoints')}
     </div>
 
     <div class="field">
       <label>Products & services</label>
       <textarea id="f-products" placeholder="A short list of what you offer, with pricing tiers or packages if relevant. This feeds your profile and any company materials, so it only needs to be entered once." oninput="saveIntakeField('productsServices', this.value)">${i.productsServices||''}</textarea>
+      ${micButton('f-products')}
     </div>
     <div class="field">
       <label>Supporting documents (optional)</label>
