@@ -391,7 +391,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
     <div style="display:flex;align-items:center;gap:10px">
       <span id="save-indicator" style="font-size:11px;color:rgba(255,255,255,0.4)"></span>
       <button class="logout-btn" id="download-btn" onclick="downloadDoc()" style="background:var(--gold);color:var(--plum);border-color:var(--gold);font-weight:600">Download Word Doc</button>
-      <button class="logout-btn" onclick="goTo('storybank')">Story Bank</button>
+      <button class="logout-btn" onclick="goTo('storybank')">The Notebook</button>
       <button class="logout-btn" onclick="confirmStartOver()">Start Over</button>
       <button class="logout-btn" onclick="doLogout()">Log out</button>
     </div>
@@ -1854,7 +1854,7 @@ function render(){
   if(state.step === 'storybank'){
     c.innerHTML = `
       <div class="step-eyebrow">Your library</div>
-      <h1 class="step-title">Story Bank</h1>
+      <h1 class="step-title">The Notebook</h1>
       ${renderStoryBank()}
     `;
     c.scrollTop = 0;
