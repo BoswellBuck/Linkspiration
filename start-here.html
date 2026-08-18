@@ -162,6 +162,14 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 .dee-notes-wrap{margin-bottom:18px}
 .dee-notes-label{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:7px}
 .dee-notes-input{width:100%;border:1.5px solid rgba(201,146,42,0.4);border-radius:var(--radius);padding:11px 14px;font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);background:var(--gold-pale);outline:none;resize:vertical;min-height:70px;transition:border-color .18s ease, box-shadow .18s ease}
+.mic-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:7px 14px;font-size:12px;font-weight:600;border-radius:20px;border:1.5px solid var(--gold);background:transparent;color:var(--gold-light,var(--gold));cursor:pointer;transition:background .15s ease,color .15s ease}
+.mic-btn:hover{background:rgba(201,146,42,0.12)}
+.mic-btn.mic-active{background:var(--gold);color:var(--plum);border-color:var(--gold)}
+.story-card{border:1px solid rgba(201,146,42,0.25);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;background:rgba(255,255,255,0.02)}
+.story-card-text{font-size:13.5px;line-height:1.55;white-space:pre-wrap;margin-bottom:8px}
+.story-card-tags{font-size:11px;color:var(--gold-light,var(--gold));margin-bottom:6px}
+.story-card-actions{display:flex;justify-content:flex-end}
+.story-card-actions .remove-row{position:static}
 .dee-notes-input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,146,42,0.14)}
 .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .sugg-pill{
@@ -383,6 +391,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
     <div style="display:flex;align-items:center;gap:10px">
       <span id="save-indicator" style="font-size:11px;color:rgba(255,255,255,0.4)"></span>
       <button class="logout-btn" id="download-btn" onclick="downloadDoc()" style="background:var(--gold);color:var(--plum);border-color:var(--gold);font-weight:600">Download Word Doc</button>
+      <button class="logout-btn" onclick="goTo('storybank')">Story Bank</button>
       <button class="logout-btn" onclick="confirmStartOver()">Start Over</button>
       <button class="logout-btn" onclick="doLogout()">Log out</button>
     </div>
@@ -438,7 +447,8 @@ let state = {
   pillars: [],
   pillarsGeneratedAt: null,
   selectedPillars: [],
-  schedule: null
+  schedule: null,
+  storyBank: []
 };
 
 /* ============ PERSISTENCE ============ */
@@ -464,6 +474,90 @@ function saveState(){
       if(indicator) indicator.textContent = 'save failed';
     }
   }, 600);
+}
+
+/* ============ VOICE-TO-TEXT (DICTATION) ============
+   Uses the browser's built-in speech recognition, no external API or
+   server round-trip. Appends transcribed speech into a target textarea
+   and fires its existing oninput-based save, so dictation slots into
+   the same save pattern as typing. Falls back gracefully with a message
+   on browsers that don't support it (e.g. Firefox). */
+let activeRecognition = null;
+let activeRecognitionBtn = null;
+
+function isVoiceInputSupported(){
+  return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+}
+
+function toggleVoiceCapture(targetId, btnEl){
+  if(activeRecognition && activeRecognitionBtn === btnEl){
+    activeRecognition.stop();
+    return;
+  }
+  if(activeRecognition){
+    activeRecognition.stop();
+  }
+  startVoiceCapture(targetId, btnEl);
+}
+
+function startVoiceCapture(targetId, btnEl){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){
+    alert("Voice input isn't supported in this browser yet. Try Chrome or Edge, or just type instead.");
+    return;
+  }
+  const target = document.getElementById(targetId);
+  if(!target) return;
+
+  const recognition = new SR();
+  recognition.lang = 'en-US';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  const startingValue = target.value;
+  const needsLeadingSpace = startingValue.length > 0 && !/\s$/.test(startingValue);
+  let finalTranscript = '';
+
+  activeRecognition = recognition;
+  activeRecognitionBtn = btnEl;
+  btnEl.classList.add('mic-active');
+  btnEl.textContent = '● Listening... (tap to stop)';
+
+  recognition.onresult = (event) => {
+    let interim = '';
+    for(let i = event.resultIndex; i < event.results.length; i++){
+      const transcript = event.results[i][0].transcript;
+      if(event.results[i].isFinal) finalTranscript += transcript + ' ';
+      else interim += transcript;
+    }
+    const joiner = needsLeadingSpace ? ' ' : '';
+    target.value = startingValue + joiner + finalTranscript + interim;
+  };
+
+  recognition.onerror = (event) => {
+    if(event.error === 'not-allowed'){
+      alert("Microphone access was blocked. Check your browser's site settings to allow it.");
+    }
+  };
+
+  recognition.onend = () => {
+    btnEl.classList.remove('mic-active');
+    btnEl.textContent = '🎙 Speak instead of typing';
+    activeRecognition = null;
+    activeRecognitionBtn = null;
+    // Commit the final transcript and trigger whatever save handler
+    // the textarea already has wired to its oninput event.
+    target.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+
+  recognition.start();
+}
+
+// Renders a small mic button next to any textarea. Pass the textarea's
+// id; the button wires itself up without needing changes anywhere else.
+function micButton(targetId){
+  if(!isVoiceInputSupported()) return '';
+  return `<button type="button" class="mic-btn" onclick="toggleVoiceCapture('${targetId}', this)">🎙 Speak instead of typing</button>`;
 }
 
 async function loadState(){
@@ -1207,6 +1301,82 @@ function addTestimonial(){ ensureIntakeArrays(); if(state.intake.testimonials.le
 function removeTestimonial(idx){ state.intake.testimonials.splice(idx,1); if(!state.intake.testimonials.length) state.intake.testimonials.push(''); saveState(); render(); }
 function updateTestimonial(idx, val){ state.intake.testimonials[idx] = val; saveState(); }
 
+/* ============ STORY BANK ============
+   A running library of client stories/anecdotes, separate from the
+   5-step wizard since it's an ongoing collection, not a one-time task.
+   Stored in the same state blob as everything else (client_sessions.state)
+   so it needs no new Supabase table or migration. */
+function addStoryBankEntry(){
+  const textEl = document.getElementById('story-new-text');
+  const tagsEl = document.getElementById('story-new-tags');
+  const text = textEl.value.trim();
+  if(!text){ textEl.focus(); return; }
+  if(!state.storyBank) state.storyBank = [];
+  state.storyBank.unshift({
+    id: 'story_' + Date.now(),
+    text: text,
+    tags: (tagsEl.value || '').trim(),
+    createdAt: new Date().toISOString()
+  });
+  saveState();
+  render();
+}
+
+function removeStoryBankEntry(id){
+  if(!window.confirm('Remove this story? This can\'t be undone.')) return;
+  state.storyBank = (state.storyBank||[]).filter(s => s.id !== id);
+  saveState();
+  render();
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+function storyBankContext(){
+  if(!state.storyBank || !state.storyBank.length) return '';
+  return state.storyBank.map((s,i) => {
+    const tagLine = s.tags ? ` (tags: ${s.tags})` : '';
+    return `Story ${i+1}${tagLine}: ${s.text}`;
+  }).join('\n\n');
+}
+
+function renderStoryBank(){
+  const stories = state.storyBank || [];
+  const list = stories.length
+    ? stories.map(s => `
+        <div class="story-card">
+          <div class="story-card-text">${escapeHtml(s.text)}</div>
+          ${s.tags ? `<div class="story-card-tags">${escapeHtml(s.tags)}</div>` : ''}
+          <div class="story-card-actions">
+            <span class="remove-row" onclick="removeStoryBankEntry('${s.id}')">✕ Remove</span>
+          </div>
+        </div>
+      `).join('')
+    : `<div class="field-hint" style="margin-top:0">No stories saved yet. Add a client transformation, a before-and-after, a lesson learned, anything you might want to turn into a post later.</div>`;
+
+  return `
+    <p class="step-desc">A running place to capture stories, anecdotes, and transformations as they happen, so you're never starting a post from a blank page. Speak them in or type them, whichever is faster in the moment.</p>
+    <div class="field">
+      <label>Add a story</label>
+      <textarea class="dee-notes-input" id="story-new-text" placeholder="e.g. A client came to me convinced her industry was 'too boring' for LinkedIn. Six weeks later she had three inbound leads from one post about a mistake she used to make..."></textarea>
+      ${micButton('story-new-text')}
+      <div style="margin-top:10px">
+        <input type="text" class="dee-notes-input" id="story-new-tags" style="min-height:unset" placeholder="Optional tags, e.g. transformation, client win, lesson learned">
+      </div>
+      <div class="btn-row" style="margin-top:12px">
+        <button class="btn btn-gold" onclick="addStoryBankEntry()">Save story</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Your stories (${stories.length})</label>
+      ${list}
+    </div>
+  `;
+}
+
 const ANTI_PERSONA_OPTIONS = [
   'Bargain hunters, only engage on price, not value',
   'Not-ready-to-invest, curious but unwilling to commit time or money to implement',
@@ -1680,6 +1850,15 @@ function renderBottomStepNav(){
 function render(){
   renderSidebar();
   const c = document.getElementById('content');
+  if(state.step === 'storybank'){
+    c.innerHTML = `
+      <div class="step-eyebrow">Your library</div>
+      <h1 class="step-title">Story Bank</h1>
+      ${renderStoryBank()}
+    `;
+    c.scrollTop = 0;
+    return;
+  }
   const meta = STEPS.find(s=>s.id===state.step);
   let body = '';
   if(state.step==='foundation') body = renderFoundation();
@@ -2189,6 +2368,7 @@ Client's LinkedIn profile positioning (if already drafted):
 ${state.outputs.profile ? state.outputs.profile.slice(0,600) : '(not yet drafted)'}
 
 ${selectedPillarContext() ? `Content pillars to draw from for this batch (every post must clearly belong to one of these):\n${selectedPillarContext()}\n` : ''}
+${storyBankContext() ? `This client has saved real stories and anecdotes below. Where one genuinely fits a post's pillar and audience, use the specific, true details from it instead of inventing a generic scenario. Don't force a story into a post it doesn't fit, and don't use the same story twice in this batch:\n${storyBankContext()}\n` : ''}
 ${notes ? `Helpful notes for this client (follow closely): ${notes}` : ''}
 
 Produce 5 first-post drafts. For each post use this exact structure:
