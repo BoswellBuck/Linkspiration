@@ -3,289 +3,457 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Linkspiration | The LinkedIn Visibility System</title>
+<title>Unsilenced | The LinkedIn Visibility System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@500&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --navy: #1B2464;
-    --navy-deep: #0F1544;
-    --plum: #362A41;
-    --plum-deep: #251C2D;
-    --gold: #F5C544;
-    --gold-deep: #E0AC22;
-    --gold-dim: rgba(240,190,46,0.4);
-    --lavender: #A99BC7;
-    --pale-yellow: #F6EEA0;
+    --white: #FFFFFF;
+    --ink: #14120F;
+    --ink-soft: #55524C;
+    --gold: #F5B700;
+    --gold-deep: #B88600;
+    --navy: #1F2E42;
+    --navy-deep: #16212F;
+    --line: #E3E1DC;
     --card-bg: #FAF9F4;
-    --card-ink: #2A2038;
-    --card-ink-soft: #6E6478;
-    --ink: #F6F3E7;
-    --ink-soft: rgba(246,243,231,0.86);
-    --ink-faint: rgba(246,243,231,0.6);
-    --radius: 2px;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    background: var(--navy);
+    background: var(--white);
     color: var(--ink);
-    line-height: 1.6;
+    font-family: 'Space Grotesk', sans-serif;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
   }
-  h1, h2, h3 {
-    font-family: 'Fraunces', serif;
-    color: var(--ink);
-    font-weight: 600;
-    letter-spacing: -0.015em;
+  .mono {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 28px; position: relative; }
-  .spine {
-    position: fixed; top: 0; left: 50%; transform: translateX(-540px);
-    width: 1px; height: 100%;
-    background: linear-gradient(to bottom, transparent, var(--gold-dim) 10%, var(--gold-dim) 90%, transparent);
-    z-index: 1; pointer-events: none;
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+
+  /* Palette bar */
+  .palette-bar { display: flex; height: 6px; }
+  .palette-bar div { flex: 1; }
+  .p1 { background: var(--white); border-top: 1px solid var(--line); }
+  .p2 { background: var(--gold); }
+  .p3 { background: var(--navy); }
+  .p4 { background: var(--ink); }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--line);
   }
-  @media (max-width: 1140px) { .spine { display: none; } }
-  .gold-divider { width: 1px; background: var(--gold); display: inline-block; opacity: 0.7; }
-  nav { padding: 34px 0 10px; }
-  nav .wrap { text-align: center; position: relative; }
+  .wordmark { font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
+  .wordmark span { color: var(--gold); }
+  nav { display: flex; align-items: center; gap: 28px; }
+  nav .mono { color: var(--ink-soft); }
   .nav-signin {
-    position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.03em;
-    color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid transparent;
-    transition: color 0.2s ease, border-color 0.2s ease;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
   }
-  .nav-signin:hover { color: var(--gold); border-bottom-color: var(--gold); }
-  @media (max-width: 560px) { .nav-signin { position: static; display: block; margin-top: 14px; transform: none; } }
-  .logo-block { display: inline-flex; flex-direction: row; align-items: baseline; gap: 16px; flex-wrap: wrap; justify-content: center; }
-  .logo-name { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
-  .logo-divider { width: 1px; height: 16px; background: var(--gold); display: inline-block; align-self: center; }
-  .logo-tag { font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
-  .hero { padding: 70px 0 60px; }
-  .hero-inner { max-width: 780px; }
-  .hero h1 { font-size: clamp(36px, 6vw, 62px); line-height: 1.08; margin-bottom: 36px; }
-  .hero h1 em { font-style: normal; color: var(--gold); }
+
+  /* Hero */
+  .hero {
+    display: grid;
+    grid-template-columns: 1.4fr 0.6fr;
+    gap: 0;
+  }
+  .hero-left {
+    padding: 72px 56px 72px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .eyebrow { color: var(--navy); margin-bottom: 28px; }
+  h1 {
+    font-weight: 700;
+    font-size: 52px;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin-bottom: 30px;
+    max-width: 580px;
+    min-height: 2.2em;
+  }
+  h1 em { font-style: normal; color: var(--gold); }
   #tw-cursor {
-    display: inline-block; width: 3px; height: 0.85em; margin-left: 3px; background: var(--gold);
+    display: inline-block; width: 3px; height: 0.85em; margin-left: 2px; background: var(--gold);
     vertical-align: -0.08em; animation: tw-blink 0.9s steps(1) infinite; transition: opacity 0.6s ease;
   }
   #tw-cursor.tw-hidden { opacity: 0; }
   @keyframes tw-blink { 50% { opacity: 0; } }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-  .hero-sub { font-size: 18px; color: var(--ink-soft); max-width: 560px; margin-top: 36px; line-height: 1.65; }
-  .pain { padding: 90px 0; border-top: 6px solid var(--gold); background: var(--navy-deep); }
-  .pain .wrap { max-width: 740px; }
-  .pain-eyebrow { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-deep); font-weight: 700; margin-bottom: 24px; }
-  .pain h2 { font-size: clamp(24px, 3.4vw, 34px); margin-bottom: 30px; max-width: 620px; }
-  .pain p { color: var(--ink-soft); font-size: 17px; margin-bottom: 18px; max-width: 640px; }
+  .sub {
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.55;
+    color: var(--ink);
+    max-width: 460px;
+    margin-bottom: 30px;
+  }
+  .link-cta {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+  }
+
+  .hero-right {
+    background: var(--gold);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 36px 32px;
+    align-self: start;
+    border-radius: 10px;
+    margin: 72px 0;
+  }
+  .stat-block { margin-top: auto; }
+  .stat-number { font-size: 56px; font-weight: 700; line-height: 0.9; letter-spacing: -0.03em; color: var(--ink); }
+  .stat-label { font-size: 13px; color: var(--ink); margin-top: 10px; max-width: 200px; line-height: 1.4; }
+  .quote-mark { font-size: 14px; color: rgba(20,18,15,0.6); line-height: 1.55; max-width: 220px; margin-bottom: 28px; }
+
+  /* Redline example card: Fraunces serif for the quotes, soft cream
+     card, gold accent border. The before/after text is static (no
+     motion) for people sensitive to moving text; only the small tag
+     label above each card does a one-time fade-in. */
+  .redline {
+    background: var(--card-bg);
+    border-left: 3px solid var(--gold);
+    border-radius: 10px;
+    padding: 26px 30px;
+    margin-top: 8px;
+  }
+  .redline-tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    font-weight: 700; color: var(--gold); display: block; margin-bottom: 16px;
+    opacity: 0; transform: translateY(6px); transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .redline-tag.tag-visible { opacity: 1; transform: translateY(0); }
+  .li-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .li-avatar {
+    width: 42px; height: 42px; border-radius: 50%; background: var(--gold); color: var(--ink);
+    display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px; font-weight: 700; letter-spacing: 0.01em; flex-shrink: 0;
+  }
+  .li-name { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+  .li-title { font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 500; color: var(--ink-soft); line-height: 1.3; }
+  .redline-before { font-family: 'Fraunces', serif; font-size: 17px; color: var(--ink-soft); text-decoration: line-through; text-decoration-color: rgba(20,18,15,0.3); margin-bottom: 14px; line-height: 1.5; }
+  .redline-arrow { font-family: 'IBM Plex Mono', monospace; color: var(--gold); font-size: 11px; margin-bottom: 14px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; }
+  .redline-after { font-family: 'Fraunces', serif; font-size: 17px; color: var(--ink); line-height: 1.6; }
+
+  .hero .redline { margin-top: 30px; max-width: 560px; }
+
+  /* Pain / The real problem, a dark navy break in an otherwise light page */
+  .pain { background: var(--navy); padding: 40px 0 88px; }
+  .pain .wrap { max-width: 720px; }
+  .pain-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 22px; }
+  .pain h2 { font-size: clamp(24px, 3.4vw, 34px); font-weight: 700; letter-spacing: -0.01em; color: var(--white); margin-bottom: 26px; max-width: 600px; line-height: 1.2; }
+  .pain p { color: rgba(255,255,255,0.82); font-size: 16.5px; font-weight: 500; margin-bottom: 16px; max-width: 620px; line-height: 1.6; }
   .pain p:last-child { margin-bottom: 0; }
-  .pain strong { color: var(--gold); font-weight: 600; font-family: 'Fraunces', serif; }
-  .compare-section { padding: 90px 0 70px; border-top: 6px solid var(--gold); }
-  .compare-head { max-width: 620px; margin-bottom: 56px; }
-  .compare-head h2 { font-size: clamp(26px, 3.6vw, 36px); margin-bottom: 14px; }
-  .compare-head p { color: var(--ink-soft); font-size: 16px; }
-  .redline { background: var(--card-bg); border-left: 3px solid var(--gold); border-radius: 14px; margin-bottom: 26px; padding: 32px 36px; }
-  .redline-tag { font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; color: var(--plum); margin-bottom: 20px; display: block; }
-  .redline-before { font-family: 'Fraunces', serif; font-size: 18px; color: var(--card-ink-soft); text-decoration: line-through; text-decoration-color: rgba(42,32,56,0.35); margin-bottom: 16px; line-height: 1.55; }
-  .redline-arrow { color: var(--gold-deep); font-size: 14px; margin-bottom: 16px; letter-spacing: 0.05em; font-weight: 700; text-transform: uppercase; }
-  .redline-after { font-family: 'Fraunces', serif; font-size: 18px; color: var(--card-ink); line-height: 1.6; border-bottom: 2px solid var(--gold); display: inline; padding-bottom: 2px; }
-  .about { padding: 96px 0; border-top: 6px solid var(--gold); background: var(--plum-deep); }
-  .about .wrap { max-width: 700px; }
-  .about-eyebrow { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 22px; }
-  .about h2 { font-size: clamp(24px, 3.4vw, 30px); margin-bottom: 24px; }
-  .about p { color: var(--ink-soft); font-size: 16.5px; margin-bottom: 18px; max-width: 600px; }
+  .pain strong { color: var(--gold); font-weight: 700; }
+
+  /* Rows: the 01/02/03 benefit overview */
+  .rows { padding: 32px 0 40px; }
+  .row { display: grid; grid-template-columns: 60px 1fr; gap: 24px; padding: 28px 0; border-bottom: 1px solid var(--line); align-items: start; }
+  .row .num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--gold); padding-top: 4px; }
+  .row h3 { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .row p { font-size: 15px; font-weight: 500; line-height: 1.6; color: var(--ink); max-width: 560px; }
+
+  /* See the difference: post + outreach examples */
+  .compare { padding: 0 0 40px; }
+  .compare-head { max-width: 620px; margin-bottom: 44px; }
+  .compare-head h2 { font-size: clamp(26px, 3.4vw, 34px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 12px; }
+  .compare-head p { color: var(--ink-soft); font-size: 15.5px; font-weight: 500; }
+  .compare .redline { margin-bottom: 22px; max-width: 640px; }
+
+  /* Who's behind it */
+  .about { padding: 32px 0 88px; border-top: 1px solid var(--line); }
+  .about .wrap { max-width: 680px; }
+  .about-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 20px; }
+  .about h2 { font-size: clamp(24px, 3.2vw, 30px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 22px; }
+  .about p { color: var(--ink); font-size: 15.5px; font-weight: 500; line-height: 1.65; margin-bottom: 16px; max-width: 600px; border-left: 2px solid var(--gold); padding-left: 20px; }
   .about p:last-child { margin-bottom: 0; }
-  .about strong { color: var(--gold); font-weight: 600; }
-  .reframe { padding: 90px 0; border-top: 6px solid var(--gold); }
-  .reframe-head { max-width: 640px; margin-bottom: 54px; }
-  .reframe-head h2 { font-size: clamp(24px, 3.4vw, 32px); margin-bottom: 16px; }
-  .reframe-head p { color: var(--ink-soft); font-size: 16.5px; }
-  .scope-row { display: flex; flex-wrap: wrap; gap: 0; margin-bottom: 56px; }
+  .about strong { color: var(--gold); font-weight: 700; }
+
+  /* Inverted closing section: differentiator + final CTA together */
+  .invert { background: var(--ink); padding: 96px 0; }
+  .invert-inner { max-width: 660px; text-align: left; }
+  .invert-eyebrow { color: var(--gold); }
+  .invert-h2 { font-weight: 700; font-size: 38px; line-height: 1.15; letter-spacing: -0.02em; color: var(--white); margin: 22px 0 18px; max-width: 560px; }
+  .invert-sub { font-size: 16px; font-weight: 500; line-height: 1.6; color: rgba(255,255,255,0.82); max-width: 480px; margin-bottom: 34px; }
+  .scope-row { display: flex; flex-wrap: wrap; gap: 0; margin-bottom: 40px; }
   .scope-item { display: flex; align-items: center; }
-  .scope-item .label { padding: 0 26px 0 0; margin-right: 26px; font-family: 'Fraunces', serif; font-size: 17px; color: var(--ink); }
-  .scope-item .gold-divider { height: 22px; margin-right: 0; }
+  .scope-item .label { padding: 0 22px 0 0; margin-right: 22px; font-size: 15px; font-weight: 500; color: var(--white); }
+  .scope-divider { width: 1px; height: 18px; background: var(--gold); display: inline-block; opacity: 0.7; }
   .scope-item:last-child .label { padding-right: 0; margin-right: 0; }
   @media (max-width: 700px) {
-    .scope-row { flex-direction: column; align-items: flex-start; gap: 12px; }
-    .scope-item .gold-divider { display: none; }
+    .scope-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .scope-divider { display: none; }
     .scope-item .label { margin-right: 0; padding-right: 0; }
   }
-  .reframe-line { font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px; color: var(--ink); max-width: 600px; line-height: 1.4; border-left: 3px solid var(--gold); padding-left: 24px; }
-  .cta { padding: 100px 0; text-align: left; background: var(--navy-deep); border-top: 1px solid rgba(246,243,231,0.08); }
-  .cta .wrap { max-width: 620px; }
-  .cta h2 { font-size: clamp(28px, 4vw, 40px); margin-bottom: 20px; }
-  .cta p { color: var(--ink-soft); font-size: 17px; margin-bottom: 40px; }
-  .cta-btn {
-    display: inline-block; background: var(--gold); color: var(--navy-deep);
-    font-family: 'Inter', sans-serif; font-weight: 800; font-size: 15px; letter-spacing: 0.03em; text-transform: uppercase;
-    padding: 19px 44px; border-radius: 10px; text-decoration: none; transition: transform 0.2s ease, background 0.2s ease;
+  .reframe-line { font-size: 18px; font-weight: 700; color: var(--white); max-width: 560px; line-height: 1.45; border-left: 2px solid var(--gold); padding-left: 20px; margin-bottom: 40px; }
+  .btn-invert {
+    background: var(--gold); color: var(--ink); border: none; padding: 16px 30px;
+    font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer;
+    text-decoration: none; display: inline-block;
   }
-  .cta-btn:hover { background: #FFD35C; transform: translateY(-1px); }
-  footer { padding: 36px 0; font-size: 13px; color: var(--ink-faint); border-top: 1px solid rgba(246,243,231,0.08); }
-  @media (max-width: 640px) {
-    .hero, .pain, .compare-section, .about, .reframe, .cta { padding-top: 60px; padding-bottom: 60px; }
-    .redline { padding: 24px 22px; }
+
+  footer { border-top: 1px solid var(--line); padding: 32px 0; display: flex; justify-content: space-between; color: var(--ink-soft); }
+
+  @media (max-width: 720px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 48px 0 32px; }
+    h1 { font-size: 34px; }
+    .hero-right { padding: 36px 24px; min-height: 200px; align-self: stretch; border-radius: 0; margin: 0; }
+    .stat-number { font-size: 88px; }
+    .stat-label { font-size: 14px; max-width: 220px; margin-top: 12px; }
+    .quote-mark { font-size: 15px; max-width: 240px; margin-bottom: 0; }
+    .row { grid-template-columns: 1fr; gap: 8px; }
+    .invert { padding: 64px 0; }
+    .invert-h2 { font-size: 28px; }
   }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
-  a:focus-visible, .cta-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  a:focus-visible, .btn-invert:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 </style>
 </head>
 <body>
 
-<div class="spine"></div>
-
-<nav>
-  <div class="wrap">
-    <div class="logo-block">
-      <div class="logo-name">Linkspiration</div>
-      <span class="logo-divider"></span>
-      <div class="logo-tag">An Unsilenced Co. System</div>
-    </div>
-    <a href="https://linkspiration.com/start-here.html" class="nav-signin">Sign in</a>
+  <div class="palette-bar">
+    <div class="p1"></div><div class="p2"></div><div class="p3"></div><div class="p4"></div>
   </div>
-</nav>
 
-<section class="hero">
   <div class="wrap">
-    <div class="hero-inner">
-      <h1><span id="tw-visible" aria-hidden="true"><span id="tw-text"></span><span id="tw-cursor"></span></span><span class="sr-only">LinkedIn isn't a posting problem. It's a visibility issue.</span></h1>
-      <div class="redline">
-        <span class="redline-tag">Headline</span>
-        <div class="redline-before">"Educator | Consultant | Speaker"</div>
-        <div class="redline-arrow">becomes</div>
-        <div class="redline-after">"Turning nervous teachers into confident leaders | Professional development for school administrators | Educator retention specialist | Keynote speaker"</div>
+    <header>
+      <div class="wordmark">UN<span>SILENCED</span></div>
+      <nav>
+        <span class="mono">Profile &middot; Content &middot; Reach</span>
+        <a href="https://linkspiration.com/start-here.html" class="nav-signin">Sign in</a>
+      </nav>
+    </header>
+
+    <div class="hero">
+      <div class="hero-left">
+        <div class="eyebrow mono">For entrepreneurs who are done being overlooked</div>
+        <h1>Invisible on LinkedIn isn't a personality trait. <span id="tw-visible" aria-hidden="true"><span id="tw-text"></span><span id="tw-cursor"></span></span><span class="sr-only">It's a setting you can change.</span></h1>
+        <p class="sub">Unsilenced builds your visibility the way a strategist would, profile, content, and audience, working from what you already know.</p>
+        <a href="#how-it-works" class="link-cta">See how it works</a>
+        <div class="redline">
+          <span class="redline-tag">Headline</span>
+          <div class="li-header">
+            <div class="li-avatar">JR</div>
+            <div>
+              <div class="li-name">Jordan Reyes</div>
+              <div class="li-title" id="li-title-headline">Educator | Consultant | Speaker</div>
+            </div>
+          </div>
+          <div class="redline-before">"Educator | Consultant | Speaker"</div>
+          <div class="redline-arrow">becomes</div>
+          <div class="redline-after">Turning nervous teachers into confident leaders | Professional development for school administrators | Educator retention specialist | Keynote speaker</div>
+        </div>
       </div>
-      <p class="hero-sub">Profile. Content. Audience. Outreach. Everything it takes to show up on LinkedIn with real strategy, not just content. Built from years of coaching entrepreneurs and small business owners to real results.</p>
+      <div class="hero-right">
+        <p class="quote-mark">"Without this, you're doing the work and nobody knows it."</p>
+        <div class="stat-block">
+          <div class="stat-number">20</div>
+          <div class="stat-label">members building their presence in the LAB right now</div>
+        </div>
+      </div>
     </div>
   </div>
-</section>
 
-<section class="pain">
+  <section class="pain">
+    <div class="wrap">
+      <div class="pain-eyebrow">The real problem</div>
+      <h2>You're not bad at LinkedIn. You just haven't had a real strategy.</h2>
+      <p>No idea what to post. Running out of things to say. Worried you'll sound salesy. Posting and hearing nothing back.</p>
+      <p>Not knowing what to post is just the symptom. The real issues run deeper: a profile that doesn't say what you actually do, no clear sense of who you should be connecting with, content going out with no plan behind it, conversations that never turn into clients.</p>
+      <p>Posting more isn't the fix. <strong>Having a system is.</strong></p>
+    </div>
+  </section>
+
   <div class="wrap">
-    <div class="pain-eyebrow">The real problem</div>
-    <h2>You're not bad at LinkedIn. You just haven't had a real strategy.</h2>
-    <p>No idea what to post. Running out of things to say. Worried you'll sound salesy. Posting and hearing nothing back.</p>
-    <p>Not knowing what to post is just the symptom. The real issues run deeper: a profile that doesn't say what you actually do, no clear sense of who you should be connecting with, content going out with no plan behind it, conversations that never turn into clients.</p>
-    <p>Posting more isn't the fix. <strong>Having a system is.</strong></p>
-  </div>
-</section>
+    <div class="rows" id="how-it-works">
+      <div class="row">
+        <div class="num">01</div>
+        <div>
+          <h3>Say it clearly</h3>
+          <p>Your profile stops sounding like a resume and starts sounding like the person people actually want to hire, refer, or buy from.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="num">02</div>
+        <div>
+          <h3>Say it often</h3>
+          <p>A steady posting rhythm built from what you already know, so showing up stops depending on catching inspiration at the right moment.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="num">03</div>
+        <div>
+          <h3>Say it to the right room</h3>
+          <p>Find and reach the people actually positioned to hire you, refer you, or buy from you, not just anyone scrolling past.</p>
+        </div>
+      </div>
+    </div>
 
-<section class="compare-section">
+    <section class="compare">
+      <div class="compare-head">
+        <h2>See the difference</h2>
+        <p>Real pieces of a LinkedIn presence, marked up the way we'd work through them together.</p>
+      </div>
+      <div class="redline">
+        <span class="redline-tag">Post</span>
+        <div class="li-header">
+          <div class="li-avatar">JR</div>
+          <div>
+            <div class="li-name">Jordan Reyes</div>
+            <div class="li-title">Educational Consultant</div>
+          </div>
+        </div>
+        <div class="redline-before">"Excited to share some thoughts on education today. Consistency is so important for teachers!"</div>
+        <div class="redline-arrow">becomes</div>
+        <div class="redline-after">The best professional development I ever ran had one slide and no PowerPoint. As an educational consultant, this is the format I keep coming back to. Simple beats polished, every time...</div>
+      </div>
+      <div class="redline">
+        <span class="redline-tag">Outreach message</span>
+        <div class="li-header">
+          <div class="li-avatar">JR</div>
+          <div>
+            <div class="li-name">Jordan Reyes</div>
+            <div class="li-title">Educational Consultant</div>
+          </div>
+        </div>
+        <div class="redline-before">"Hi! I saw your profile and would love to connect!"</div>
+        <div class="redline-arrow">becomes</div>
+        <div class="redline-after">Hi Sarah, loved your post on new teacher mentorship. I work with school leaders on that too. Would love to connect.</div>
+      </div>
+    </section>
+
+    <section class="about">
+      <h2>Who's behind it</h2>
+      <p>I'm <strong>Dee Boswell-Buck</strong>, LinkedIn Visibility Strategist for entrepreneurs and small businesses across Canada. I've spent years coaching business owners 1-on-1 and inside my Content LAB&trade; community on what actually works on LinkedIn, not what used to work. Unsilenced is that methodology, built into a system I keep updated as LinkedIn changes.</p>
+      <p>It's AI, but it's not copy and paste. Every headline, post, and message it creates comes from your own business and how you actually talk. You edit it before it goes out, so it never reads like a template.</p>
+    </section>
+  </div>
+
+  <section class="invert">
+    <div class="wrap invert-inner">
+      <div class="eyebrow mono invert-eyebrow">Why this is different</div>
+      <h2 class="invert-h2">Most tools generate posts. That's a small piece of what actually moves the needle.</h2>
+      <p class="invert-sub">Unsilenced walks you through your entire LinkedIn presence.</p>
+      <div class="scope-row">
+        <div class="scope-item"><span class="label">Profile &amp; positioning</span><span class="scope-divider"></span></div>
+        <div class="scope-item"><span class="label">Content &amp; pillars</span><span class="scope-divider"></span></div>
+        <div class="scope-item"><span class="label">Audience &amp; outreach</span><span class="scope-divider"></span></div>
+        <div class="scope-item"><span class="label">Offline conversion</span></div>
+      </div>
+      <p class="reframe-line">This is how real conversations turn into real business. It's not a content tool. It's a full visibility system.</p>
+      <a href="https://linkspiration.com/start-here.html" class="btn-invert">See how it works</a>
+    </div>
+  </section>
+
   <div class="wrap">
-    <div class="compare-head">
-      <h2>See the difference</h2>
-      <p>Real pieces of a LinkedIn presence, marked up the way we'd work through them together.</p>
-    </div>
-    <div class="redline">
-      <span class="redline-tag">Post</span>
-      <div class="redline-before">"Excited to share some thoughts on education today. Consistency is so important for teachers!"</div>
-      <div class="redline-arrow">becomes</div>
-      <div class="redline-after">"The best professional development I ever ran had one slide and no PowerPoint. As an educational consultant, this is the format I keep coming back to. Simple beats polished, every time..."</div>
-    </div>
-    <div class="redline">
-      <span class="redline-tag">Outreach message</span>
-      <div class="redline-before">"Hi! I saw your profile and would love to connect!"</div>
-      <div class="redline-arrow">becomes</div>
-      <div class="redline-after">"Hi Sarah, loved your post on new teacher mentorship. I work with school leaders on that too. Would love to connect."</div>
-    </div>
+    <footer>
+      <span class="mono">Unsilenced Co.</span>
+      <span class="mono">Boswell-Buck Creative</span>
+    </footer>
   </div>
-</section>
-
-<section class="about">
-  <div class="wrap">
-    <div class="about-eyebrow">The strategist behind Linkspiration</div>
-    <h2>Who's behind it</h2>
-    <p>I'm <strong>Dee Boswell-Buck</strong>, Canada's leading LinkedIn Visibility Strategist for entrepreneurs and small businesses. I've spent years coaching business owners 1-on-1 and inside my LAB community on what actually works on LinkedIn, not what used to work. Linkspiration is that methodology, built into a system I keep updated as LinkedIn changes.</p>
-    <p>It's AI, but it's not copy and paste. Every headline, post, and message it creates comes from your own business and how you actually talk. You edit it before it goes out, so it never reads like a template.</p>
-  </div>
-</section>
-
-<section class="reframe">
-  <div class="wrap">
-    <div class="reframe-head">
-      <h2>Most tools generate posts. That's a small piece of what actually moves the needle.</h2>
-      <p>Linkspiration walks you through your entire LinkedIn presence.</p>
-    </div>
-    <div class="scope-row">
-      <div class="scope-item"><span class="label">Profile &amp; positioning</span><span class="gold-divider"></span></div>
-      <div class="scope-item"><span class="label">Content &amp; pillars</span><span class="gold-divider"></span></div>
-      <div class="scope-item"><span class="label">Audience &amp; outreach</span><span class="gold-divider"></span></div>
-      <div class="scope-item"><span class="label">Offline conversion</span></div>
-    </div>
-    <p class="reframe-line">This is how real conversations turn into real business. It's not a content tool. It's a full visibility system.</p>
-  </div>
-</section>
-
-<section class="cta">
-  <div class="wrap">
-    <h2>See the system for yourself</h2>
-    <p>Linkspiration walks you through your profile, your content, your outreach, and everything in between. Built from years of coaching, ready whenever you are.</p>
-    <a href="https://linkspiration.com/start-here.html" class="cta-btn">See how it works</a>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">&copy; 2026 Unsilenced Co. &middot; Linkspiration</div>
-</footer>
 
 <script>
 (function () {
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function showTag(el) {
+    if (el) el.classList.add('tag-visible');
+  }
+
+  // Hero headline typewriter for "It's a setting you can change."
+  // then the hero's "Headline" tag fades in right after, since the
+  // example text itself is now static (no typing/blinking there).
   var textEl = document.getElementById('tw-text');
   var cursorEl = document.getElementById('tw-cursor');
-  if (!textEl || !cursorEl) return;
-  var segments = [
-    { text: "LinkedIn isn't a posting problem. It's a ", em: false },
-    { text: "visibility", em: true },
-    { text: " issue.", em: false }
-  ];
-  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduceMotion) {
-    segments.forEach(function (seg) {
-      if (seg.em) {
-        var em = document.createElement('em');
-        em.textContent = seg.text;
-        textEl.appendChild(em);
-      } else {
-        textEl.appendChild(document.createTextNode(seg.text));
-      }
-    });
-    cursorEl.classList.add('tw-hidden');
-    return;
-  }
-  var chars = [];
-  segments.forEach(function (seg) {
-    for (var i = 0; i < seg.text.length; i++) {
-      chars.push({ c: seg.text[i], em: seg.em });
-    }
-  });
-  var idx = 0;
-  var emSpan = null;
-  function step() {
-    if (idx >= chars.length) {
-      setTimeout(function () { cursorEl.classList.add('tw-hidden'); }, 1100);
-      return;
-    }
-    var item = chars[idx];
-    if (item.em) {
-      if (!emSpan) {
-        emSpan = document.createElement('em');
-        textEl.appendChild(emSpan);
-      }
-      emSpan.textContent += item.c;
+  var heroTag = document.querySelector('.hero .redline-tag');
+
+  if (textEl && cursorEl) {
+    var segments = [
+      { text: "It's a ", em: false },
+      { text: "setting you can change", em: true },
+      { text: ".", em: false }
+    ];
+    if (reduceMotion) {
+      segments.forEach(function (seg) {
+        if (seg.em) {
+          var em = document.createElement('em');
+          em.textContent = seg.text;
+          textEl.appendChild(em);
+        } else {
+          textEl.appendChild(document.createTextNode(seg.text));
+        }
+      });
+      cursorEl.classList.add('tw-hidden');
+      showTag(heroTag);
     } else {
-      emSpan = null;
-      textEl.appendChild(document.createTextNode(item.c));
+      var chars = [];
+      segments.forEach(function (seg) {
+        for (var i = 0; i < seg.text.length; i++) chars.push({ c: seg.text[i], em: seg.em });
+      });
+      var idx = 0;
+      var emSpan = null;
+      function step() {
+        if (idx >= chars.length) {
+          setTimeout(function () { cursorEl.classList.add('tw-hidden'); }, 1000);
+          showTag(heroTag);
+          return;
+        }
+        var item = chars[idx];
+        if (item.em) {
+          if (!emSpan) { emSpan = document.createElement('em'); textEl.appendChild(emSpan); }
+          emSpan.textContent += item.c;
+        } else {
+          emSpan = null;
+          textEl.appendChild(document.createTextNode(item.c));
+        }
+        idx++;
+        var delay = (item.c === '.' || item.c === ',') ? 340 : 85;
+        setTimeout(step, delay);
+      }
+      window.addEventListener('DOMContentLoaded', function () { setTimeout(step, 250); });
     }
-    idx++;
-    var delay = (item.c === '.' || item.c === ',') ? 380 : 95;
-    setTimeout(step, delay);
+  } else {
+    showTag(heroTag);
   }
-  window.addEventListener('DOMContentLoaded', function () {
-    setTimeout(step, 300);
-  });
+
+  // Post + Outreach tags: a single gentle fade-in when each card scrolls
+  // into view. No moving or blinking text, just the label settling in.
+  var compareTags = document.querySelectorAll('.compare .redline-tag');
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    compareTags.forEach(showTag);
+  } else {
+    var seen = new WeakSet();
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && !seen.has(entry.target)) {
+          seen.add(entry.target);
+          showTag(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    compareTags.forEach(function (el) { observer.observe(el); });
+  }
 })();
 </script>
 </body>
