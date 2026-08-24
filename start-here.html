@@ -3,101 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unsilenced Co. | Linkspiration</title>
+<title>Unsilenced | The LinkedIn Visibility System</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&display=swap');
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#1B2464;
-  --navy-deep:#0F1544;
-  --plum:#362A41;
-  --plum-deep:#251C2D;
-  --plum-mid:#1B2464;
-  --plum-pale:#EDE8F5;
-  --sovereign:#A99BC7;
-  --gold:#F5C544;
-  --gold-deep:#E0AC22;
+  --navy:#1F2E42;
+  --navy-deep:#16212F;
+  --plum:#1F2E42;
+  --plum-deep:#16212F;
+  --plum-mid:#16212F;
+  --plum-pale:#FBF3D9;
+  --sovereign:#1F2E42;
+  --gold:#F5B700;
+  --gold-deep:#F5B700;
   --gold-light:#F6EEA0;
   --gold-pale:#FBF3D9;
   --signal:#3D6B5C;
   --signal-soft:#E7EFEB;
-  --blush:#EDE8F0;
-  --page-bg:#1B2464;
+  --blush:#F3F1EA;
+  --page-bg:#FFFFFF;
   --ivory:#FAF9F4;
-  --ink:#2A2038;
-  --ink-soft:#6E6478;
-  --ink-pale:rgba(42,32,56,0.45);
-  --text-on-dark:#F6F3E7;
+  --ink:#14120F;
+  --ink-soft:#55524C;
+  --ink-pale:rgba(20,18,15,0.45);
+  --text-on-dark:#14120F;
   --white:#FAF9F4;
-  --border:rgba(42,32,56,0.12);
-  --border-mid:rgba(42,32,56,0.22);
-  --border-on-dark:rgba(246,243,231,0.16);
+  --border:rgba(20,18,15,0.12);
+  --border-mid:rgba(20,18,15,0.22);
+  --border-on-dark:rgba(20,18,15,0.16);
   --radius:10px;
   --radius-lg:18px;
-  --shadow:0 4px 24px rgba(15,21,68,0.14);
-  --shadow-md:0 4px 16px rgba(15,21,68,0.12), 0 2px 6px rgba(15,21,68,0.06);
-  --shadow-lg:0 12px 32px rgba(15,21,68,0.20), 0 4px 12px rgba(15,21,68,0.10);
+  --shadow:0 4px 24px rgba(20,18,15,0.14);
+  --shadow-md:0 4px 16px rgba(20,18,15,0.12), 0 2px 6px rgba(20,18,15,0.06);
+  --shadow-lg:0 12px 32px rgba(20,18,15,0.20), 0 4px 12px rgba(20,18,15,0.10);
 }
-body{font-family:'Inter',sans-serif;background:var(--page-bg);color:var(--text-on-dark);font-size:14px;line-height:1.6;min-height:100vh;position:relative}
+body{font-family:'Space Grotesk',sans-serif;background:var(--page-bg);color:var(--text-on-dark);font-size:14px;line-height:1.6;min-height:100vh;position:relative}
 body::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.04;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-h1,h2,h3{font-family:'Playfair Display',serif}
+h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
 .dot{color:var(--gold)}
 
-/* ===== LOGIN (scoped dark theme, does not affect the rest of the app) ===== */
+/* ===== LOGIN (scoped light theme, matches the public landing page) ===== */
 .login-wrap{
-  --lp-bg:#1B2464; --lp-bg2:#362A41; --lp-bone:#F6F3E7; --lp-clay:#A99BC7; --lp-ink:#2A2038;
+  --lp-bg:#FFFFFF; --lp-bg2:rgba(245,183,0,0.12); --lp-bone:#14120F; --lp-clay:#F5B700; --lp-ink:#14120F;
   display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;position:relative;overflow:hidden;
   background:var(--lp-bg);
-  background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(245,197,68,0.14), transparent),
-    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(169,155,199,0.12), transparent);
 }
 .login-box{width:100%;max-width:440px;text-align:center;position:relative;z-index:1;padding:8px 4px}
 .wordmark{font-family:'Fraunces',serif;font-weight:600;font-size:32px;letter-spacing:-.01em;color:var(--lp-bone);margin-bottom:2px}
-.wordmark-sub{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(240,233,220,0.5);margin-bottom:22px}
-.trust-pill{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:999px;border:1px solid rgba(224,172,78,0.5);background:rgba(201,146,42,0.12);font-size:12.5px;font-weight:700;color:#E8B85C;margin-bottom:24px}
+.wordmark-sub{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(20,18,15,0.45);margin-bottom:22px}
+.trust-pill{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:999px;border:1px solid rgba(245,183,0,0.5);background:rgba(245,183,0,0.12);font-size:12.5px;font-weight:700;color:#8A6400;margin-bottom:24px}
 .trust-pill svg{width:12px;height:12px;flex-shrink:0}
 .login-title{font-family:'Fraunces',serif;font-weight:500;font-size:21px;color:var(--lp-bone);margin-bottom:6px;text-align:left}
-.login-sub{font-size:12.5px;color:rgba(240,233,220,0.6);margin-bottom:22px;line-height:1.6;text-align:left}
-.auth-tabs{display:flex;width:100%;background:rgba(255,255,255,0.05);border-radius:12px;padding:4px;margin-bottom:22px}
-.auth-tab{flex:1;text-align:center;padding:10px;border-radius:9px;font-size:13.5px;font-weight:700;cursor:pointer;color:rgba(240,233,220,0.65);background:none;border:none;font-family:'Inter',sans-serif;transition:background .18s ease, color .18s ease}
+.login-sub{font-size:12.5px;color:rgba(20,18,15,0.55);margin-bottom:22px;line-height:1.6;text-align:left}
+.auth-tabs{display:flex;width:100%;background:var(--card-bg,#FAF9F4);border:1px solid rgba(20,18,15,0.1);border-radius:12px;padding:4px;margin-bottom:22px}
+.auth-tab{flex:1;text-align:center;padding:10px;border-radius:9px;font-size:13.5px;font-weight:700;cursor:pointer;color:rgba(20,18,15,0.5);background:none;border:none;font-family:'Space Grotesk',sans-serif;transition:background .18s ease, color .18s ease}
 .auth-tab.active{background:var(--lp-bg2);color:var(--lp-bone)}
 .login-field{text-align:left;margin-bottom:14px}
-.login-field label{display:block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--lp-clay);margin-bottom:6px}
-.login-field input{width:100%;border:1px solid rgba(240,233,220,0.18);border-radius:10px;padding:13px 15px;font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border-color .18s ease, box-shadow .18s ease;background:rgba(255,255,255,0.03);color:var(--lp-bone)}
-.login-field input::placeholder{color:rgba(240,233,220,0.32)}
-.login-field input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,146,42,0.14)}
+.login-field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--lp-clay);margin-bottom:6px}
+.login-field input{width:100%;border:1.5px solid rgba(20,18,15,0.15);border-radius:10px;padding:13px 15px;font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;transition:border-color .18s ease, box-shadow .18s ease;background:#FAF9F4;color:var(--lp-bone)}
+.login-field input::placeholder{color:rgba(20,18,15,0.32)}
+.login-field input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(245,183,0,0.14)}
 
-/* ===== HERO DEMO (no card, sits directly on the dark background) ===== */
+/* ===== HERO DEMO (no card, sits directly on the light background) ===== */
 .hero-panel{text-align:center;margin-bottom:8px}
-.hero-eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--lp-clay);margin-bottom:16px}
-.hero-line-old{font-family:'Fraunces',serif;font-style:italic;font-size:17px;color:rgba(240,233,220,0.6);text-decoration:line-through;text-decoration-color:rgba(184,105,92,0.6);margin-bottom:12px;line-height:1.5}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);margin-bottom:16px}
+.hero-line-old{font-family:'Fraunces',serif;font-style:italic;font-size:17px;color:rgba(20,18,15,0.5);text-decoration:line-through;text-decoration-color:rgba(184,105,92,0.6);margin-bottom:12px;line-height:1.5}
 .hero-arrow{color:var(--gold);font-size:16px;margin-bottom:12px;display:block}
 .hero-line-new{font-family:'Fraunces',serif;font-weight:500;font-size:22px;line-height:1.32;color:var(--lp-bone);margin-bottom:8px}
-.hero-line-new .accent{color:var(--gold-light)}
-.hero-caption{font-size:12px;color:rgba(240,233,220,0.55);margin-top:10px}
+.hero-line-new .accent{color:var(--gold)}
+.hero-caption{font-size:12px;color:rgba(20,18,15,0.5);margin-top:10px}
 
 .wordmark-row{display:flex;align-items:baseline;gap:8px;justify-content:center;margin-bottom:2px}
 .brand-dot{width:9px;height:9px;border-radius:50%;background:var(--gold);flex-shrink:0;align-self:center}
-.login-divider .line{flex:1;height:1px;background:rgba(240,233,220,0.14)}
+.login-divider .line{flex:1;height:1px;background:rgba(20,18,15,0.12)}
 
 .consent-block{text-align:left;margin-bottom:16px;display:flex;flex-direction:column;gap:10px}
-.consent-row{display:flex;align-items:flex-start;gap:9px;font-size:11.5px;color:rgba(240,233,220,0.6);line-height:1.5}
+.consent-row{display:flex;align-items:flex-start;gap:9px;font-size:11.5px;color:rgba(20,18,15,0.55);line-height:1.5}
 .consent-row input[type="checkbox"]{margin-top:2px;flex-shrink:0;width:15px;height:15px;accent-color:var(--gold);cursor:pointer}
 .consent-row label{cursor:pointer}
-.consent-row a{color:var(--gold-light)}
-.consent-row a{color:var(--sovereign);font-weight:600;text-decoration:underline}
-.legal-modal-overlay{display:none;position:fixed;inset:0;background:rgba(35,24,33,0.55);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.consent-row a{color:var(--navy);font-weight:600;text-decoration:underline}
+.legal-modal-overlay{display:none;position:fixed;inset:0;background:rgba(20,18,15,0.55);z-index:1000;align-items:center;justify-content:center;padding:20px}
 .legal-modal-overlay.open{display:flex}
 .legal-modal{background:var(--ivory);border-radius:var(--radius-lg);max-width:600px;width:100%;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.35)}
 .legal-modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.legal-modal-header h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--plum)}
+.legal-modal-header h3{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--ink)}
 .legal-modal-close{background:none;border:none;font-size:20px;color:var(--ink-pale);cursor:pointer;line-height:1;padding:4px}
 .legal-modal-close:hover{color:var(--ink)}
 .legal-modal-body{padding:20px 24px;overflow-y:auto;font-size:12.5px;line-height:1.7;color:var(--ink);white-space:pre-wrap}
@@ -107,7 +103,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 
 /* ===== APP ===== */
 .app{display:none;flex-direction:column;min-height:100vh}
-.header{background:var(--plum);padding:16px 26px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.header{background:#FFFFFF;border-bottom:1px solid rgba(20,18,15,0.1);padding:16px 26px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 @media(max-width:640px){
   .header{padding:12px 16px}
   .header-tag{display:none}
@@ -115,35 +111,35 @@ h1,h2,h3{font-family:'Playfair Display',serif}
   .logout-btn{font-size:10.5px;padding:6px 10px}
 }
 .header-brand{display:flex;align-items:baseline;gap:2px}
-.header-name{font-family:'Playfair Display',serif;font-size:20px;color:var(--white);font-weight:600}
-.header-tag{font-size:10.5px;color:rgba(255,255,255,0.55);margin-left:12px;letter-spacing:.04em}
-.logout-btn{font-size:11.5px;color:rgba(255,255,255,0.6);background:none;border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:6px 14px;cursor:pointer;transition:.15s}
-.logout-btn:hover{background:rgba(255,255,255,0.1);color:white}
+.header-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:var(--ink)}
+.header-tag{font-size:10.5px;color:rgba(20,18,15,0.5);margin-left:12px;letter-spacing:.04em}
+.logout-btn{font-size:11.5px;color:rgba(20,18,15,0.55);background:none;border:1px solid rgba(20,18,15,0.2);border-radius:20px;padding:6px 14px;cursor:pointer;transition:.15s}
+.logout-btn:hover{background:rgba(20,18,15,0.06);color:var(--ink)}
 
 .main{display:flex;flex:1}
-.sidebar{width:230px;flex-shrink:0;background:var(--plum-mid);padding:22px 0;display:flex;flex-direction:column;gap:2px}
+.sidebar{width:230px;flex-shrink:0;background:#FFFFFF;border-right:1px solid rgba(20,18,15,0.1);padding:22px 0;display:flex;flex-direction:column;gap:2px}
 @media(max-width:760px){.sidebar{display:none}}
-.sidebar-item{display:flex;align-items:center;gap:10px;padding:12px 22px;cursor:pointer;transition:all .15s;border-left:3px solid transparent;font-size:12.5px;color:rgba(255,255,255,0.55);font-weight:500}
-.sidebar-item:hover{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.85)}
-.sidebar-item.active{background:rgba(201,146,42,0.12);color:var(--gold-light);border-left-color:var(--gold);font-weight:600}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:12px 22px;cursor:pointer;transition:all .15s;border-left:3px solid transparent;font-size:12.5px;color:rgba(20,18,15,0.55);font-weight:500}
+.sidebar-item:hover{background:rgba(20,18,15,0.04);color:var(--ink)}
+.sidebar-item.active{background:rgba(245,183,0,0.16);color:var(--ink);border-left-color:var(--gold);font-weight:700}
 .sidebar-item.locked{opacity:.35;pointer-events:none}
-.sidebar-num{width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:9.5px;flex-shrink:0}
-.sidebar-item.active .sidebar-num{background:var(--gold);border-color:var(--gold);color:var(--plum)}
-.sidebar-item.done .sidebar-num{background:rgba(255,255,255,0.25);border-color:transparent;color:white}
+.sidebar-num{width:18px;height:18px;border-radius:50%;border:1px solid rgba(20,18,15,0.25);display:flex;align-items:center;justify-content:center;font-size:9.5px;flex-shrink:0}
+.sidebar-item.active .sidebar-num{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.sidebar-item.done .sidebar-num{background:rgba(20,18,15,0.1);border-color:transparent;color:var(--ink)}
 
 .content{flex:1;overflow-y:auto;padding:36px 40px;max-width:820px}
 @media(min-width:1300px){ .content{max-width:1120px; padding:44px 56px} }
 @media(min-width:1650px){ .content{max-width:1300px} }
-.step-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--gold);margin-bottom:8px}
-.step-title{font-size:26px;color:var(--text-on-dark);margin-bottom:8px;font-weight:600}
-.step-desc{font-size:13.5px;color:rgba(246,243,231,0.68);line-height:1.7;margin-bottom:26px;max-width:600px}
+.step-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--navy);margin-bottom:8px}
+.step-title{font-size:26px;color:var(--ink);margin-bottom:8px;font-weight:700}
+.step-desc{font-size:13.5px;color:rgba(20,18,15,0.62);line-height:1.7;margin-bottom:26px;max-width:600px}
 
 .field{margin-bottom:18px}
-.field label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--sovereign);margin-bottom:7px}
-.field input,.field textarea{width:100%;border:1.5px solid var(--border-mid);border-radius:var(--radius);padding:11px 14px;font-family:'Inter',sans-serif;font-size:13.5px;color:var(--ink);background:var(--white);outline:none;transition:border-color .18s ease, box-shadow .18s ease;resize:vertical}
-.field input:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,146,42,0.14)}
+.field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--navy);margin-bottom:7px}
+.field input,.field textarea{width:100%;border:1.5px solid var(--border-mid);border-radius:var(--radius);padding:11px 14px;font-family:'Space Grotesk',sans-serif;font-size:13.5px;color:var(--ink);background:var(--white);outline:none;transition:border-color .18s ease, box-shadow .18s ease;resize:vertical}
+.field input:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(245,183,0,0.14)}
 .field textarea{min-height:80px}
-.field-hint{font-size:11.5px;color:rgba(246,243,231,0.55);margin-top:5px}
+.field-hint{font-size:11.5px;color:rgba(20,18,15,0.55);margin-top:5px}
 .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow)}
 
 .upload-wrap{border:1.5px dashed var(--border-mid);border-radius:var(--radius);padding:18px;background:var(--white);text-align:center;margin-bottom:8px;cursor:pointer;transition:.15s}
@@ -161,20 +157,20 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 
 .dee-notes-wrap{margin-bottom:18px}
 .dee-notes-label{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:7px}
-.dee-notes-input{width:100%;border:1.5px solid rgba(201,146,42,0.4);border-radius:var(--radius);padding:11px 14px;font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);background:var(--gold-pale);outline:none;resize:vertical;min-height:70px;transition:border-color .18s ease, box-shadow .18s ease}
+.dee-notes-input{width:100%;border:1.5px solid rgba(245,183,0,0.4);border-radius:var(--radius);padding:11px 14px;font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--ink);background:var(--gold-pale);outline:none;resize:vertical;min-height:70px;transition:border-color .18s ease, box-shadow .18s ease}
 .mic-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:7px 14px;font-size:12px;font-weight:600;border-radius:20px;border:1.5px solid var(--gold);background:transparent;color:var(--gold-light,var(--gold));cursor:pointer;transition:background .15s ease,color .15s ease}
-.mic-btn:hover{background:rgba(201,146,42,0.12)}
+.mic-btn:hover{background:rgba(245,183,0,0.12)}
 .mic-btn.mic-active{background:var(--gold);color:var(--plum);border-color:var(--gold)}
-.story-card{border:1px solid rgba(201,146,42,0.25);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;background:rgba(255,255,255,0.02)}
+.story-card{border:1px solid rgba(245,183,0,0.25);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;background:var(--white)}
 .story-card-text{font-size:13.5px;line-height:1.55;white-space:pre-wrap;margin-bottom:8px}
 .story-card-tags{font-size:11px;color:var(--gold-light,var(--gold));margin-bottom:6px}
 .story-card-actions{display:flex;justify-content:flex-end}
 .story-card-actions .remove-row{position:static}
-.dee-notes-input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,146,42,0.14)}
+.dee-notes-input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(245,183,0,0.14)}
 .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .sugg-pill{
   display:inline-flex;align-items:center;gap:5px;
-  font-family:'Inter',sans-serif;font-size:11.5px;font-weight:500;color:var(--plum-mid);
+  font-family:'Space Grotesk',sans-serif;font-size:11.5px;font-weight:500;color:var(--plum-mid);
   background:var(--white);border:1.5px solid var(--border-mid);border-radius:20px;
   padding:7px 13px;cursor:pointer;transition:all .18s ease;
 }
@@ -185,8 +181,8 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 .dee-notes-input::placeholder{color:var(--ink-pale);font-style:italic}
 
 .btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:6px;margin-bottom:24px}
-.btn{padding:11px 22px;border-radius:8px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:transform .15s ease, box-shadow .15s ease, background .15s ease;display:inline-flex;align-items:center;gap:7px}
-.btn-primary{background:var(--sovereign);color:white}
+.btn{padding:11px 22px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:transform .15s ease, box-shadow .15s ease, background .15s ease;display:inline-flex;align-items:center;gap:7px}
+.btn-primary{background:var(--gold);color:var(--ink)}
 .btn-primary:hover{background:#552444;transform:translateY(-1px);box-shadow:0 4px 12px rgba(107,48,88,0.3)}
 .btn-gold{background:linear-gradient(180deg, var(--gold) 0%, var(--gold-deep) 100%);color:white;box-shadow:0 2px 8px rgba(156,110,31,0.3)}
 .btn-gold:hover{background:linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);transform:translateY(-1px);box-shadow:0 6px 16px rgba(156,110,31,0.4)}
@@ -206,8 +202,8 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 .generating-msg{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-soft);padding:8px 0}
 .spinner{width:16px;height:16px;border:2px solid var(--border-mid);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
-.out-h{font-family:'Playfair Display',serif;font-size:16px;color:var(--sovereign);margin:16px 0 8px;font-weight:600}
-.out-subh{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--gold-deep);margin:16px 0 6px;padding-top:12px;border-top:1px solid var(--border)}
+.out-h{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--gold);margin:16px 0 8px}
+.out-subh{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--gold-deep);margin:16px 0 6px;padding-top:12px;border-top:1px solid var(--border)}
 .out-subh:first-child{margin-top:0;padding-top:0;border-top:none}
 .out-divider{border:none;height:2px;margin:32px 0;background:linear-gradient(to right, transparent, var(--gold) 15%, var(--gold) 85%, transparent);opacity:.55}
 .out-h:first-child{margin-top:0}
@@ -235,14 +231,14 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 .vstep-item:first-child .vstep-connector{display:none}
 .vstep-dot{
   width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;
   background:var(--white);border:2px solid var(--border-mid);color:var(--ink-pale);
   z-index:1;transition:all .25s ease;flex-shrink:0;
 }
 .vstep-item.done .vstep-dot{background:var(--signal);border-color:var(--signal);color:white}
-.vstep-item.active .vstep-dot{background:var(--plum);border-color:var(--plum);color:white;box-shadow:0 0 0 4px rgba(54,42,65,0.15)}
-.vstep-name{font-size:9.5px;font-weight:600;color:rgba(246,243,231,0.45);margin-top:6px;text-align:center;letter-spacing:.01em;max-width:70px;line-height:1.3}
-.vstep-item.active .vstep-name{color:var(--gold-light)}
+.vstep-item.active .vstep-dot{background:var(--plum);border-color:var(--plum);color:white;box-shadow:0 0 0 4px rgba(31,46,66,0.15)}
+.vstep-name{font-size:9.5px;font-weight:600;color:rgba(20,18,15,0.45);margin-top:6px;text-align:center;letter-spacing:.01em;max-width:70px;line-height:1.3}
+.vstep-item.active .vstep-name{color:var(--gold);font-weight:700}
 .vstep-item.done .vstep-name{color:#6FAE97}
 .step-nav-mobile{display:none;gap:6px;flex-wrap:wrap}
 @media(max-width:760px){
@@ -262,7 +258,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 .repeat-row .remove-row:hover{color:#A8324D}
 .repeat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
 .repeat-grid:last-child{margin-bottom:0}
-.repeat-row input,.repeat-row textarea{width:100%;border:1px solid var(--border-mid);border-radius:8px;padding:9px 12px;font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);background:var(--ivory);outline:none;resize:vertical}
+.repeat-row input,.repeat-row textarea{width:100%;border:1px solid var(--border-mid);border-radius:8px;padding:9px 12px;font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--ink);background:var(--ivory);outline:none;resize:vertical}
 .repeat-row input:focus,.repeat-row textarea:focus{border-color:var(--gold)}
 .repeat-row textarea{min-height:50px}
 .add-row-btn{font-size:12px;font-weight:600;color:var(--sovereign);background:none;border:1px dashed var(--border-mid);border-radius:8px;padding:9px 14px;cursor:pointer;width:100%;text-align:center;transition:.15s;margin-bottom:18px}
@@ -270,9 +266,9 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 .pillar-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;transition:box-shadow .2s ease, border-color .2s ease}
 .pillar-card:hover{box-shadow:var(--shadow-md);border-color:var(--gold-light)}
 .pillar-card-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--gold);color:white;font-size:10.5px;font-weight:700;margin-right:8px;flex-shrink:0}
-.pillar-card input{width:100%;border:1px solid var(--border-mid);border-radius:8px;padding:9px 12px;font-family:'Inter',sans-serif;font-size:13.5px;color:var(--ink);background:var(--ivory);outline:none;margin-bottom:8px}
+.pillar-card input{width:100%;border:1px solid var(--border-mid);border-radius:8px;padding:9px 12px;font-family:'Space Grotesk',sans-serif;font-size:13.5px;color:var(--ink);background:var(--ivory);outline:none;margin-bottom:8px}
 .pillar-card input.pillar-name{font-weight:700;font-size:14.5px;color:var(--sovereign);background:var(--white)}
-.pillar-card textarea{width:100%;border:1px solid var(--border-mid);border-radius:8px;padding:9px 12px;font-family:'Inter',sans-serif;font-size:12.5px;color:var(--ink);background:var(--ivory);outline:none;resize:vertical;min-height:44px;margin-bottom:8px}
+.pillar-card textarea{width:100%;border:1px solid var(--border-mid);border-radius:8px;padding:9px 12px;font-family:'Space Grotesk',sans-serif;font-size:12.5px;color:var(--ink);background:var(--ivory);outline:none;resize:vertical;min-height:44px;margin-bottom:8px}
 .pillar-card input:focus,.pillar-card textarea:focus{border-color:var(--gold)}
 .pillar-field-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-pale);margin-bottom:4px}
 .pillar-toggles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
@@ -283,7 +279,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 .pillar-empty p{font-size:12.5px;color:var(--ink-soft);margin-bottom:12px}
 .progress-summary{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;box-shadow:var(--shadow)}
 .ps-stat{text-align:center;flex-shrink:0}
-.ps-num{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--sovereign)}
+.ps-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;color:var(--gold)}
 .ps-label{font-size:10.5px;color:var(--ink-pale);text-transform:uppercase;letter-spacing:.04em}
 .ps-bar-wrap{flex:1;min-width:160px}
 .ps-bar-label{font-size:11.5px;color:var(--ink-soft);margin-bottom:6px;display:flex;justify-content:space-between}
@@ -298,7 +294,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
   <div class="login-box">
     <div class="wordmark-row">
       <span class="brand-dot"></span>
-      <div class="wordmark">Linkspiration<span class="dot">.</span></div>
+      <div class="wordmark">Unsilenced<span class="dot">.</span></div>
     </div>
     <div class="wordmark-sub">By Unsilenced Co.</div>
 
@@ -371,7 +367,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
   <div class="login-box" style="max-width:400px">
     <div class="wordmark-row">
       <span class="brand-dot"></span>
-      <div class="wordmark">Linkspiration<span class="dot">.</span></div>
+      <div class="wordmark">Unsilenced<span class="dot">.</span></div>
     </div>
     <div class="wordmark-sub">By Unsilenced Co.</div>
     <div class="login-title" style="text-align:center">You're on the list</div>
@@ -385,11 +381,11 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 <div class="app" id="app">
   <div class="header">
     <div class="header-brand">
-      <span class="header-name">Linkspiration<span class="dot">.</span></span>
+      <span class="header-name">Unsilenced<span class="dot">.</span></span>
       <span class="header-tag">BY UNSILENCED CO.</span>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
-      <span id="save-indicator" style="font-size:11px;color:rgba(255,255,255,0.4)"></span>
+      <span id="save-indicator" style="font-size:11px;color:rgba(20,18,15,0.4)"></span>
       <button class="logout-btn" id="download-btn" onclick="downloadDoc()" style="background:var(--gold);color:var(--plum);border-color:var(--gold);font-weight:600">Download Word Doc</button>
       <button class="logout-btn" onclick="goTo('storybank')">The Notebook</button>
       <button class="logout-btn" onclick="confirmStartOver()">Start Over</button>
@@ -693,7 +689,7 @@ function renderVoiceModule(){
     const updated = voiceProfile.voice_profile_updated_at ? new Date(voiceProfile.voice_profile_updated_at).toLocaleDateString() : '';
     return `
       <div class="card" style="padding:18px 20px;margin-bottom:22px">
-        <div class="dee-notes-label" style="color:var(--sovereign);margin-bottom:8px">🎙️ Your Voice</div>
+        <div class="dee-notes-label" style="color:var(--gold);margin-bottom:8px">🎙️ Your Voice</div>
         <p style="font-size:13px;color:var(--ink);line-height:1.6;margin-bottom:8px">${v.notes}</p>
         <p style="font-size:11px;color:var(--ink-pale);margin-bottom:12px">${sourceLabel}${updated ? ` · Updated ${updated}` : ''}</p>
         <button class="btn btn-secondary" style="padding:8px 16px;font-size:12px" onclick="voiceUIMode='choose';render()">Update My Voice</button>
@@ -704,7 +700,7 @@ function renderVoiceModule(){
   if(voiceUIMode === 'choose'){
     return `
       <div class="card" style="padding:18px 20px;margin-bottom:22px">
-        <div class="dee-notes-label" style="color:var(--sovereign);margin-bottom:6px">🎙️ Your Voice</div>
+        <div class="dee-notes-label" style="color:var(--gold);margin-bottom:6px">🎙️ Your Voice</div>
         <p class="field-hint" style="margin-bottom:14px">Match generated content to how you actually write. Takes two minutes, makes everything sound more like you.</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn btn-gold" style="padding:9px 16px;font-size:12.5px" onclick="voiceUIMode='samples';render()">I have writing samples</button>
@@ -718,7 +714,7 @@ function renderVoiceModule(){
   if(voiceUIMode === 'samples'){
     return `
       <div class="card" style="padding:18px 20px;margin-bottom:22px">
-        <div class="dee-notes-label" style="color:var(--sovereign);margin-bottom:6px">🎙️ Your Voice, from your writing</div>
+        <div class="dee-notes-label" style="color:var(--gold);margin-bottom:6px">🎙️ Your Voice, from your writing</div>
         <p class="field-hint" style="margin-bottom:10px">Paste 2-5 things you've actually written (LinkedIn posts, emails, whatever sounds like you), separated by a blank line between each.</p>
         <textarea class="dee-notes-input" id="voice-samples-input" placeholder="Paste your first sample here...
 
@@ -737,14 +733,14 @@ Leave a blank line, then paste your next sample..." style="min-height:160px"></t
   const selRow = (id, label, options) => `
     <div class="field" style="margin-bottom:12px">
       <label>${label}</label>
-      <select id="${id}" style="width:100%;border:1.5px solid var(--border-mid);border-radius:var(--radius);padding:10px 12px;font-family:'Inter',sans-serif;font-size:13px;background:var(--white)">
+      <select id="${id}" style="width:100%;border:1.5px solid var(--border-mid);border-radius:var(--radius);padding:10px 12px;font-family:'Space Grotesk',sans-serif;font-size:13px;background:var(--white)">
         ${options.map(o=>`<option value="${o.v}">${o.l}</option>`).join('')}
       </select>
     </div>
   `;
   return `
     <div class="card" style="padding:18px 20px;margin-bottom:22px">
-      <div class="dee-notes-label" style="color:var(--sovereign);margin-bottom:6px">🎙️ Your Voice, from a few quick questions</div>
+      <div class="dee-notes-label" style="color:var(--gold);margin-bottom:6px">🎙️ Your Voice, from a few quick questions</div>
       <p class="field-hint" style="margin-bottom:14px">No writing samples needed. Answer these and we'll build a starting voice profile.</p>
       ${selRow('voice-q-rhythm', 'How do you naturally write?', [{v:'short_punchy',l:'Short, punchy sentences'},{v:'flowing',l:'Longer, flowing sentences'},{v:'mixed',l:'A mix of both'}])}
       ${selRow('voice-q-formality', 'How formal are you?', [{v:'casual',l:'Casual, like texting a friend'},{v:'conversational',l:'Conversational, professional but warm'},{v:'formal',l:'Formal and polished'}])}
@@ -822,15 +818,15 @@ const LEGAL_DOCS = {
     title: 'Terms of Service',
     checkboxId: 'consent-tos',
     text: `Terms of Service
-Linkspiration by Unsilenced Co., Beta Version for Coaching Group Members
+Unsilenced by Unsilenced Co., Beta Version for Coaching Group Members
 
-These Terms of Service ("Terms") govern your access to and use of Linkspiration ("Platform"), operated by Boswell-Buck Creative / Unsilenced Co. ("we," "us," "Company"). By creating an account or using the Platform, you agree to these Terms.
+These Terms of Service ("Terms") govern your access to and use of Unsilenced ("Platform"), operated by Boswell-Buck Creative / Unsilenced Co. ("we," "us," "Company"). By creating an account or using the Platform, you agree to these Terms.
 
 1. Who Can Use This
-Access to Linkspiration is currently limited to invited members of Dee Boswell-Buck's coaching group. Access may be modified, paused, or ended at our discretion.
+Access to Unsilenced is currently limited to invited members of Dee Boswell-Buck's coaching group. Access may be modified, paused, or ended at our discretion.
 
-2. What Linkspiration Does
-Linkspiration guides you through building LinkedIn assets (profile content, posts, audience strategy, and related materials) using AI-generated suggestions based on your input.
+2. What Unsilenced Does
+Unsilenced guides you through building LinkedIn assets (profile content, posts, audience strategy, and related materials) using AI-generated suggestions based on your input.
 
 3. AI-Generated Content
 - Content generated through the Platform is created using a third-party AI service and is provided as a starting point, not a guaranteed final product
@@ -872,9 +868,9 @@ Questions about these Terms can be sent to billing@deeboswellbuck.com.`
     title: 'Privacy Policy',
     checkboxId: 'consent-privacy',
     text: `Privacy Policy
-Linkspiration by Unsilenced Co., Beta Version for Coaching Group Members
+Unsilenced by Unsilenced Co., Beta Version for Coaching Group Members
 
-This Privacy Policy explains how Boswell-Buck Creative / Unsilenced Co. ("we," "us") collects, uses, and protects your information when you use Linkspiration ("Platform").
+This Privacy Policy explains how Boswell-Buck Creative / Unsilenced Co. ("we," "us") collects, uses, and protects your information when you use Unsilenced ("Platform").
 
 1. Information We Collect
 - Account information: name, email address, login credentials
@@ -1402,7 +1398,7 @@ function renderAntiPersonaBlock(){
     return `
       <div class="consent-row" style="cursor:pointer" onclick="toggleAntiPersona('${opt.replace(/'/g,"\\'")}')">
         <input type="checkbox" ${checked?'checked':''} onclick="event.stopPropagation();toggleAntiPersona('${opt.replace(/'/g,"\\'")}')" style="accent-color:var(--gold);width:15px;height:15px;flex-shrink:0;margin-top:2px">
-        <label style="cursor:pointer;font-size:12.5px;color:rgba(246,243,231,0.82);line-height:1.5">${opt}</label>
+        <label style="cursor:pointer;font-size:12.5px;color:rgba(20,18,15,0.82);line-height:1.5">${opt}</label>
       </div>
     `;
   }).join('');
@@ -1413,7 +1409,7 @@ function renderAntiPersonaBlock(){
       ${checks}
       <div class="consent-row">
         <input type="checkbox" ${otherChecked?'checked':''} onchange="if(this.checked){document.getElementById('anti-persona-other-input').style.display='block'}else{state.intake.antiPersonas=state.intake.antiPersonas.filter(p=>!p.startsWith('Other:'));saveState();render()}" style="accent-color:var(--gold);width:15px;height:15px;flex-shrink:0;margin-top:2px">
-        <label style="font-size:12.5px;color:rgba(246,243,231,0.82)">Other, please specify</label>
+        <label style="font-size:12.5px;color:rgba(20,18,15,0.82)">Other, please specify</label>
       </div>
       <input type="text" id="anti-persona-other-input" value="${otherVal}" placeholder="Describe who else you'd rather not attract" style="display:${otherChecked?'block':'none'};margin-top:-2px"
         onblur="const v=this.value.trim(); state.intake.antiPersonas=state.intake.antiPersonas.filter(p=>!p.startsWith('Other:')); if(v) state.intake.antiPersonas.push('Other: '+v); saveState();">
@@ -1608,7 +1604,7 @@ function renderPillarSection(){
     return `
       <div class="field">
         <label>Your content pillars</label>
-        <div class="field-hint" style="margin-top:0;margin-bottom:10px">Linkspiration builds you 4 fixed content pillars, the recurring themes your posts will draw from. Fill in Who You Serve and Your Core Offer(s) above first for the best result.</div>
+        <div class="field-hint" style="margin-top:0;margin-bottom:10px">Unsilenced builds you 4 fixed content pillars, the recurring themes your posts will draw from. Fill in Who You Serve and Your Core Offer(s) above first for the best result.</div>
         <div class="pillar-empty">
           <p>No pillars generated yet.</p>
           <button class="btn btn-gold" id="pillar-gen-btn" onclick="generatePillars(false)">Generate my 4 pillars</button>
@@ -1932,7 +1928,7 @@ function renderFoundation(){
     <div class="field">
       <label>Brand voice</label>
       <div class="field-hint" style="margin-top:0;margin-bottom:10px">Pick the one that's closest to how you actually sound.</div>
-      <select id="f-brandvoice" style="width:100%;border:1.5px solid var(--border-mid);border-radius:var(--radius);padding:11px 14px;font-family:'Inter',sans-serif;font-size:13.5px;background:var(--white);color:var(--ink)" onchange="saveIntakeField('brandVoice', this.value); render()">
+      <select id="f-brandvoice" style="width:100%;border:1.5px solid var(--border-mid);border-radius:var(--radius);padding:11px 14px;font-family:'Space Grotesk',sans-serif;font-size:13.5px;background:var(--white);color:var(--ink)" onchange="saveIntakeField('brandVoice', this.value); render()">
         <option value="" ${!i.brandVoice ? 'selected' : ''}>Select one...</option>
         <option value="Friendly and conversational" ${i.brandVoice==='Friendly and conversational'?'selected':''}>Friendly and conversational</option>
         <option value="Professional and ambitious" ${i.brandVoice==='Professional and ambitious'?'selected':''}>Professional and ambitious</option>
@@ -2315,7 +2311,7 @@ function renderScheduleSection(){
 
   return `
     <div class="card" style="margin-top:20px;padding:20px 22px">
-      <div class="dee-notes-label" style="color:var(--sovereign)">📅 Suggested Posting Schedule</div>
+      <div class="dee-notes-label" style="color:var(--gold)">📅 Suggested Posting Schedule</div>
       <div class="field-hint" style="margin-bottom:12px">This is a suggested rhythm, not auto-posting. Copy each post from above and publish it yourself on LinkedIn around the suggested time. Pick how often you want to post:</div>
       <div style="display:flex;gap:8px;margin-bottom:6px">
         ${freqBtn('2x', '2x / week')}
@@ -2595,7 +2591,7 @@ function deeNotesBlock(key, placeholder){
 /* ============ PRINT ============ */
 function buildSummaryHtml(){
   const i = state.intake;
-  let html = `<div class="doc-brand"><span class="doc-word">Linkspiration<span style="color:#C9922A">.</span></span></div><div class="doc-sub">by Unsilenced Co., LinkedIn Visibility Plan</div>`;
+  let html = `<div class="doc-brand"><span class="doc-word">Unsilenced<span style="color:#B8890B">.</span></span></div><div class="doc-sub">by Unsilenced Co., LinkedIn Visibility Plan</div>`;
 
   html += `<h2>Foundation</h2>`;
   html += `<div class="field-row"><div class="k">Your name</div><div class="v">${i.fullName ? i.fullName : '<span class="empty">not provided</span>'}</div></div>`;
@@ -2658,22 +2654,22 @@ function buildSummaryHtml(){
 }
 
 const DOC_CSS = `
-  font-family:'Inter',Arial,sans-serif;color:#231821;padding:10px 6px;line-height:1.6;
+  font-family:'Space Grotesk',Arial,sans-serif;color:#231821;padding:10px 6px;line-height:1.6;
 `;
 const DOC_STYLE_TAG = `
-  .doc-print-wrap{font-family:'Inter',Arial,sans-serif;color:#231821;max-width:720px;margin:0 auto;padding:20px}
-  .doc-print-wrap .doc-word{font-family:Georgia,serif;color:#2C1A2E;font-size:28px;font-weight:600}
+  .doc-print-wrap{font-family:'Space Grotesk',Arial,sans-serif;color:#231821;max-width:720px;margin:0 auto;padding:20px}
+  .doc-print-wrap .doc-word{font-family:Georgia,serif;color:#1F2E42;font-size:28px;font-weight:600}
   .doc-print-wrap .doc-sub{color:#6E5E6C;font-size:12px;margin-bottom:28px;text-transform:uppercase;letter-spacing:.08em}
-  .doc-print-wrap h2{font-family:Georgia,serif;color:#6B3058;font-size:18px;margin:26px 0 10px;border-bottom:2px solid #C9922A;padding-bottom:6px}
-  .doc-print-wrap .out-h{font-family:Georgia,serif;color:#6B3058;font-size:15px;margin:16px 0 6px}
+  .doc-print-wrap h2{font-family:Georgia,serif;color:#1F2E42;font-size:18px;margin:26px 0 10px;border-bottom:2px solid #B8890B;padding-bottom:6px}
+  .doc-print-wrap .out-h{font-family:Georgia,serif;color:#1F2E42;font-size:15px;margin:16px 0 6px}
   .doc-print-wrap .out-subh{font-family:Calibri,Arial,sans-serif;font-size:10px;font-weight:bold;letter-spacing:.05em;color:#9C6E1F;margin:14px 0 5px;padding-top:8px;border-top:1px solid #ddd}
   .doc-print-wrap .out-divider{border:none;border-top:1px solid #ddd;margin:20px 0}
   .doc-print-wrap .field-row{margin-bottom:10px}
-  .doc-print-wrap .field-row .k{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#C9922A;font-weight:bold}
+  .doc-print-wrap .field-row .k{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#B8890B;font-weight:bold}
   .doc-print-wrap .field-row .v{color:#231821}
   .doc-print-wrap .out-p, .doc-print-wrap p{margin-bottom:8px}
   .doc-print-wrap .out-bullet{padding-left:14px;position:relative;margin-bottom:5px}
-  .doc-print-wrap .out-bullet::before{content:"\u2022";position:absolute;left:0;color:#C9922A}
+  .doc-print-wrap .out-bullet::before{content:"\u2022";position:absolute;left:0;color:#B8890B}
   .doc-print-wrap .empty{color:#B1A0AE;font-style:italic}
 `;
 
@@ -2687,19 +2683,19 @@ function downloadDoc(){
   const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
 <head>
 <meta charset="utf-8">
-<title>Linkspiration LinkedIn Visibility Plan</title>
+<title>Unsilenced LinkedIn Visibility Plan</title>
 <!--[if gte mso 9]>
 <xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml>
 <![endif]-->
 <style>
   @page { margin: 1in; }
   body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #231821; line-height: 1.5; }
-  .doc-word { font-family: Georgia, serif; color: #2C1A2E; font-size: 26pt; font-weight: bold; }
+  .doc-word { font-family: Georgia, serif; color: #1F2E42; font-size: 26pt; font-weight: bold; }
   .doc-sub { color: #6E5E6C; font-size: 9pt; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20pt; }
-  h2 { font-family: Georgia, serif; color: #6B3058; font-size: 15pt; margin-top: 22pt; margin-bottom: 8pt; border-bottom: 1.5pt solid #C9922A; padding-bottom: 4pt; }
-  .out-h { font-family: Georgia, serif; color: #6B3058; font-size: 12.5pt; font-weight: bold; margin-top: 12pt; margin-bottom: 4pt; }
+  h2 { font-family: Georgia, serif; color: #1F2E42; font-size: 15pt; margin-top: 22pt; margin-bottom: 8pt; border-bottom: 1.5pt solid #B8890B; padding-bottom: 4pt; }
+  .out-h { font-family: Georgia, serif; color: #1F2E42; font-size: 12.5pt; font-weight: bold; margin-top: 12pt; margin-bottom: 4pt; }
   .field-row { margin-bottom: 8pt; }
-  .field-row .k { font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.5pt; color: #C9922A; font-weight: bold; }
+  .field-row .k { font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.5pt; color: #B8890B; font-weight: bold; }
   .field-row .v { color: #231821; }
   .out-p, p { margin-bottom: 8pt; }
   .out-bullet { margin-left: 14pt; margin-bottom: 5pt; }
