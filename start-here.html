@@ -158,9 +158,9 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
 .dee-notes-wrap{margin-bottom:18px}
 .dee-notes-label{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold-deep);margin-bottom:7px}
 .dee-notes-input{width:100%;border:1.5px solid rgba(245,183,0,0.4);border-radius:var(--radius);padding:11px 14px;font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--ink);background:var(--gold-pale);outline:none;resize:vertical;min-height:70px;transition:border-color .18s ease, box-shadow .18s ease}
-.mic-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:7px 14px;font-size:12px;font-weight:600;border-radius:20px;border:1.5px solid var(--gold);background:transparent;color:var(--gold-light,var(--gold));cursor:pointer;transition:background .15s ease,color .15s ease}
+.mic-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:7px 14px;font-size:12px;font-weight:700;border-radius:20px;border:none;background:var(--gold);color:var(--ink);cursor:pointer;transition:background .15s ease,transform .15s ease}
 .mic-btn:hover{background:rgba(245,183,0,0.12)}
-.mic-btn.mic-active{background:var(--gold);color:var(--plum);border-color:var(--gold)}
+.mic-btn.mic-active{background:var(--ink);color:var(--gold)}
 .story-card{border:1px solid rgba(245,183,0,0.25);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;background:var(--white)}
 .story-card-text{font-size:13.5px;line-height:1.55;white-space:pre-wrap;margin-bottom:8px}
 .story-card-tags{font-size:11px;color:var(--gold-light,var(--gold));margin-bottom:6px}
@@ -203,10 +203,10 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
 .spinner{width:16px;height:16px;border:2px solid var(--border-mid);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
 .out-h{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--gold-deep);margin:16px 0 8px}
-.out-subh{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--gold-deep);margin:16px 0 6px;padding-top:12px;border-top:1px solid var(--border)}
+.out-subh{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--gold-pale);border-left:3px solid var(--gold);padding:8px 12px;margin:18px 0 10px;border-radius:4px}
 .out-subh:first-child{margin-top:0;padding-top:0;border-top:none}
 .out-divider{border:none;height:2px;margin:32px 0;background:linear-gradient(to right, transparent, var(--gold) 15%, var(--gold) 85%, transparent);opacity:.55}
-.out-module-block{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px 24px;margin-bottom:20px}
+.out-module-block{background:#FFFFFF;border:1.5px solid var(--ink);border-radius:var(--radius-lg);padding:22px 24px;margin-bottom:20px}
 .out-module-block .out-h{margin-top:0}
 .post-card-meta{background:var(--gold-pale);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px}
 .post-meta-row{font-size:12.5px;line-height:1.6;color:var(--ink)}
@@ -1263,7 +1263,15 @@ function formatOutput(raw){
       html += `<div class="out-module-block"><div class="out-h">${line}</div>`;
       inModuleBlock = true;
     } else if(/^[A-Z0-9 &']{3,40}$/.test(capsLabelCheck) && capsLabelCheck.length >= 3){
-      html += `<div class="out-subh">${line}</div>`;
+      const colonIdx = line.indexOf(':');
+      const hasContentAfterColon = colonIdx !== -1 && line.slice(colonIdx+1).trim().length > 0;
+      if(hasContentAfterColon){
+        // e.g. "TITLE: LinkedIn Ghostwriting Package" — a labeled line with real
+        // content, not a standalone section header, so keep it readable body text
+        html += `<div class="out-p"><strong>${line.slice(0,colonIdx+1)}</strong>${line.slice(colonIdx+1)}</div>`;
+      } else {
+        html += `<div class="out-subh">${line}</div>`;
+      }
     } else if(/^[-•]\s/.test(line)){
       html += `<div class="out-bullet">${line.replace(/^[-•]\s/,'')}</div>`;
     } else if(/^\d+[\.\)]\s/.test(line)){
@@ -2054,7 +2062,7 @@ const HEADLINE_TOOL = {
       },
       recommendation: { type: 'string', description: "A paragraph naming the strongest option and why, referencing the client's niche, audience, and credentials" },
       keyword_placement: { type: 'string', description: 'Which 3-5 primary keywords for this client are woven into the recommended headline and why those specific ones' },
-      what_to_avoid: { type: 'array', items: { type: 'string' }, minItems: 3, maxItems: 4, description: 'Tips specific to writing this client\'s headline' }
+      what_to_avoid: { type: 'array', items: { type: 'string' }, minItems: 3, maxItems: 4, description: 'REQUIRED, never leave this empty: write 3-4 specific, concrete tips for writing this client\'s headline, things to avoid given their niche, audience, and role' }
     },
     required: ['options', 'recommendation', 'keyword_placement', 'what_to_avoid']
   }
@@ -2080,7 +2088,7 @@ const BANNER_TOOL = {
       },
       recommendation: { type: 'string', description: 'A paragraph naming the strongest tagline and why' },
       canva_tips: { type: 'array', items: { type: 'string' }, minItems: 5, maxItems: 5, description: 'Tips for actually designing the banner around the chosen tagline' },
-      what_to_avoid: { type: 'array', items: { type: 'string' }, minItems: 3, maxItems: 4, description: "Common banner design mistakes for this client's field" }
+      what_to_avoid: { type: 'array', items: { type: 'string' }, minItems: 3, maxItems: 4, description: "REQUIRED, never leave this empty: write 3-4 specific, concrete banner design mistakes for this client's field, given the tagline options above" }
     },
     required: ['options', 'recommendation', 'canva_tips', 'what_to_avoid']
   }
@@ -2103,7 +2111,7 @@ function formatHeadlineModule(data){
     lines.push(`Characters: ${opt.characters}`);
     lines.push(`Why it works: ${opt.why_it_works}`);
   });
-  lines.push(`Dee's Recommendation: ${data.recommendation}`);
+  lines.push(`Recommendation: ${data.recommendation}`);
   lines.push(`Keyword Placement: ${data.keyword_placement}`);
   lines.push('What to Avoid:');
   (data.what_to_avoid || []).forEach(item => lines.push(`- ${item}`));
@@ -2121,7 +2129,7 @@ function formatBannerModule(data){
     lines.push(`Characters: ${opt.characters}`);
     lines.push(`Why it works: ${opt.why_it_works}`);
   });
-  lines.push(`Dee's Recommendation: ${data.recommendation}`);
+  lines.push(`Recommendation: ${data.recommendation}`);
   lines.push('Canva Tips:');
   (data.canva_tips || []).forEach(tip => lines.push(`- ${tip}`));
   lines.push('What to Avoid:');
@@ -2374,6 +2382,12 @@ CONTENT RULES (non-negotiable, apply to every post):
 - Marketing style: direct, benefit-led, US business-writing conventions, phrased so it lands globally. Avoid US-only slang, idioms, or references that would not translate for an international LinkedIn audience.
 - Before finalizing each post, silently ask: does this actually convert, meaning would a real reader in this audience segment feel enough to comment, DM, or click, not just skim past. If a sentence sounds nice but doesn't move someone toward that action, cut or rewrite it. Every post is written to convert, not just to farm likes.
 - No hashtags anywhere in the caption. Not at the end, not inline. None.
+
+BATCH DISTINCTIVENESS (non-negotiable, check this across all 5 posts together before finalizing):
+- The 5 posts must not read like variations of the same post. Vary the hook style across the batch: don't open more than one post with a question, don't open more than one with "I," don't open more than one with a statistic or bold claim. Mix it up on purpose.
+- Vary the structural approach across posts: a personal story, a client example, a direct opinion or contrarian take, a lesson learned from a mistake, a quick tip or reframe. Don't let all 5 follow the same shape (setup, insight, CTA) with just the words swapped.
+- Vary sentence rhythm from post to post, not just within each post. If post 1 leans short and punchy throughout, post 2 should read differently, not the same clipped cadence with new words dropped in.
+- Before finalizing, read all 5 captions back to back. If two of them could be describing the same underlying point with a different coat of paint, rewrite one of them to come at it from a genuinely different angle.
 
 Client foundation:
 ${intakeSummary()}
@@ -2754,6 +2768,7 @@ function outputDisclaimerHtml(variant){
 function formatContentOutput(raw){
   if(!raw) return '';
   raw = raw.replace(/#[a-zA-Z0-9_]+/g, '');
+  raw = raw.replace(/\*\*/g, ''); // strip stray markdown bold so field labels like "**Caption:**" still match
   const firstPostIdx = raw.search(/###\s*Post\s*\d+/i);
   if(firstPostIdx === -1) return formatOutput(raw); // no posts detected, fall back to generic formatting
 
@@ -2774,15 +2789,22 @@ function formatContentOutput(raw){
     const titleMatch = part.match(/^###\s*Post\s*(\d+)[:\-]?\s*(.*)/i);
     const num = titleMatch ? titleMatch[1] : '';
     const label = titleMatch ? titleMatch[2].split('\n')[0].trim() : '';
-    const pillar = (part.match(/-\s*Pillar:\s*(.+)/i) || [])[1] || '';
-    const audience = (part.match(/-\s*Audience:\s*(.+)/i) || [])[1] || '';
-    const hook = (part.match(/-\s*Hook:\s*(.+)/i) || [])[1] || '';
-    const captionMatch = part.match(/-\s*Caption:\s*([\s\S]*?)(?:\n\s*-\s*Characters:|\n\s*-\s*CTA:|$)/i);
-    const caption = captionMatch ? captionMatch[1].trim() : '';
-    const characters = (part.match(/-\s*Characters:\s*(.+)/i) || [])[1] || '';
-    const cta = (part.match(/-\s*CTA:\s*(.+)/i) || [])[1] || '';
-    const whyItWorks = (part.match(/-\s*Why it works:\s*(.+)/i) || [])[1] || '';
+    const pillar = (part.match(/[-•]?\s*Pillar:\s*(.+)/i) || [])[1] || '';
+    const audience = (part.match(/[-•]?\s*Audience:\s*(.+)/i) || [])[1] || '';
+    const hook = (part.match(/[-•]?\s*Hook:\s*(.+)/i) || [])[1] || '';
+    const captionMatch = part.match(/[-•]?\s*Caption:\s*([\s\S]*?)(?:\n\s*[-•]?\s*Characters:|\n\s*[-•]?\s*CTA:|$)/i);
+    let caption = captionMatch ? captionMatch[1].trim() : '';
+    const characters = (part.match(/[-•]?\s*Characters:\s*(.+)/i) || [])[1] || '';
+    const cta = (part.match(/[-•]?\s*CTA:\s*(.+)/i) || [])[1] || '';
+    const whyItWorks = (part.match(/[-•]?\s*Why it works:\s*(.+)/i) || [])[1] || '';
     const captionId = 'post-caption-' + num + '-' + Math.random().toString(36).slice(2,7);
+
+    // Safety net: if the Caption field couldn't be found at all (unexpected
+    // formatting from the model), fall back to showing the full raw block
+    // rather than silently rendering an empty post.
+    if(!caption){
+      caption = part.replace(/^###\s*Post\s*\d+[:\-]?\s*.*/i, '').trim();
+    }
 
     html += `<div class="out-module-block post-card">
       <div class="post-card-meta">
