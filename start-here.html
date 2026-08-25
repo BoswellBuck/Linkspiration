@@ -109,6 +109,8 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
   .header-tag{display:none}
   .header > div:last-child{gap:6px;flex-wrap:wrap}
   .logout-btn{font-size:10.5px;padding:6px 10px}
+  #download-btn .btn-label-full{display:none}
+  #download-btn .btn-label-short{display:inline}
 }
 .header-brand{display:flex;align-items:baseline;gap:2px}
 .header-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:var(--ink)}
@@ -147,6 +149,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
 
 .field{margin-bottom:18px}
 .field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--gold-deep);margin-bottom:7px}
+.field-recommended{font-family:'Space Grotesk',sans-serif;text-transform:none;letter-spacing:normal;font-size:10.5px;font-weight:600;color:var(--ink-soft);background:var(--line);border-radius:8px;padding:1px 8px;margin-left:6px;vertical-align:middle}
 .field input,.field textarea{width:100%;border:1.5px solid var(--border-mid);border-radius:var(--radius);padding:11px 14px;font-family:'Space Grotesk',sans-serif;font-size:13.5px;color:var(--ink);background:var(--white);outline:none;transition:border-color .18s ease, box-shadow .18s ease;resize:vertical}
 .field input:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(245,183,0,0.14)}
 .field textarea{min-height:80px}
@@ -160,6 +163,8 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
 .upload-label strong{color:var(--sovereign)}
 .upload-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .upload-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--blush);border-radius:8px;padding:8px 12px;font-size:12.5px;color:var(--ink)}
+.upload-chip-error{background:rgba(184,105,92,0.12);color:#8C4033}
+.inline-error{background:rgba(184,105,92,0.1);border:1px solid rgba(184,105,92,0.3);border-radius:8px;padding:10px 14px;font-size:12.5px;color:#8C4033;margin-top:10px;line-height:1.5}
 .upload-chip.processing{color:var(--ink-pale)}
 .upload-chip .remove-doc{cursor:pointer;color:var(--ink-pale);font-size:14px;font-weight:700;flex-shrink:0}
 .upload-chip .remove-doc:hover{color:#A8324D}
@@ -244,7 +249,10 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
 
 /* ===== VISUAL STEPPER ===== */
 .visual-stepper{display:flex;align-items:flex-start;justify-content:center;gap:0;flex:1;max-width:420px;margin:0 auto}
-.vstep-item{display:flex;flex-direction:column;align-items:center;position:relative;flex:1}
+.vstep-item{display:flex;flex-direction:column;align-items:center;position:relative;flex:1;cursor:pointer}
+.vstep-item:hover .vstep-dot{transform:scale(1.08)}
+.vstep-item.locked{cursor:not-allowed;opacity:.45}
+.vstep-item.locked:hover .vstep-dot{transform:none}
 .vstep-connector{position:absolute;top:12px;left:-50%;width:100%;height:2px;background:var(--border-mid);z-index:0}
 .vstep-item.done .vstep-connector{background:var(--signal)}
 .vstep-item.active .vstep-connector{background:var(--gold)}
@@ -393,6 +401,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
     <div class="login-title" style="text-align:center">You're on the list</div>
     <div class="login-sub" style="margin-bottom:22px;text-align:center">Your account is created, just waiting on approval from Dee before it unlocks. This is usually quick, hang tight.</div>
     <button class="btn btn-gold btn-full" style="margin-bottom:10px" onclick="checkApprovalAgain()" id="check-approval-btn">Check again</button>
+    <div id="approval-check-error" class="inline-error" style="display:none"></div>
     <button class="btn btn-secondary btn-full" onclick="doLogout()">Log out</button>
   </div>
 </div>
@@ -406,7 +415,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
     </div>
     <div style="display:flex;align-items:center;gap:10px">
       <span id="save-indicator" style="font-size:11px;color:rgba(20,18,15,0.4)"></span>
-      <button class="logout-btn" id="download-btn" onclick="downloadDoc()" style="background:var(--gold);color:var(--plum);border-color:var(--gold);font-weight:600">Download Word Doc</button>
+      <button class="logout-btn" id="download-btn" onclick="downloadDoc()" style="background:var(--gold);color:var(--plum);border-color:var(--gold);font-weight:600"><span class="btn-label-full">Download Word Doc</span><span class="btn-label-short" style="display:none">Download</span></button>
       <button class="logout-btn" onclick="goTo('storybank')">The Notebook</button>
       <button class="logout-btn" onclick="confirmStartOver()">Start Over</button>
       <button class="logout-btn" onclick="doLogout()">Log out</button>
@@ -1042,6 +1051,7 @@ async function doAuth(){
 
     // check approval status before letting anyone into the app
     let approved = false;
+    let approvalCheckFailed = false;
     try{
       const { data: profile } = await supabaseClient
         .from('profiles')
@@ -1051,6 +1061,15 @@ async function doAuth(){
       approved = !!(profile && profile.approved);
     }catch(e){
       console.error('Could not check approval status:', e);
+      approvalCheckFailed = true;
+    }
+
+    if(approvalCheckFailed){
+      errorEl.style.color = '#A8324D';
+      errorEl.textContent = "Your account was created, but we couldn't check its approval status just now. Refresh this page and log in again in a moment.";
+      submitBtn.disabled = false;
+      submitBtn.textContent = authMode === 'signup' ? 'Create Account' : 'Log In';
+      return;
     }
 
     if(!approved){
@@ -1100,7 +1119,11 @@ async function startOver(){
     pillars: [],
     pillarsGeneratedAt: null,
     selectedPillars: [],
-    schedule: null
+    schedule: null,
+    storyBank: [],
+    contentGeneratedAt: null,
+    audienceGeneratedAt: null,
+    dismissedNudges: {}
   };
   saveState();
   render();
@@ -1128,6 +1151,8 @@ async function checkApprovalAgain(){
       .eq('id', currentUser.id)
       .maybeSingle();
     const approved = !!(profile && profile.approved);
+    const errEl = document.getElementById('approval-check-error');
+    if(errEl) errEl.style.display = 'none';
     if(approved){
       document.getElementById('pending-screen').style.display = 'none';
       document.getElementById('app').style.display = 'flex';
@@ -1142,6 +1167,11 @@ async function checkApprovalAgain(){
     console.error('Approval check failed:', e);
     btn.disabled = false;
     btn.textContent = 'Check again';
+    const errEl = document.getElementById('approval-check-error');
+    if(errEl){
+      errEl.style.display = 'block';
+      errEl.textContent = "Couldn't check your status just now, this is usually a connection hiccup. Try again in a moment.";
+    }
   }
 }
 
@@ -1470,7 +1500,7 @@ function renderStoryBank(){
     <p class="step-desc">A running place to capture stories, anecdotes, and transformations as they happen, so you're never starting a post from a blank page. Speak them in or type them, whichever is faster in the moment.</p>
     <div class="field">
       <label>Add a story</label>
-      <textarea class="dee-notes-input" id="story-new-text" placeholder="e.g. A client came to me convinced her industry was 'too boring' for LinkedIn. Six weeks later she had three inbound leads from one post about a mistake she used to make..."></textarea>
+      <textarea class="dee-notes-input" id="story-new-text" placeholder="e.g. A mistake I used to make that turned into a client's biggest win..."></textarea>
       ${micButton('story-new-text')}
       <div style="margin-top:10px">
         <input type="text" class="dee-notes-input" id="story-new-tags" style="min-height:unset" placeholder="Optional tags, e.g. transformation, client win, lesson learned">
@@ -1719,6 +1749,7 @@ function renderPillarSection(){
         <div class="pillar-empty">
           <p>No pillars generated yet.</p>
           <button class="btn btn-gold" id="pillar-gen-btn" onclick="generatePillars(false)">Generate my 4 pillars</button>
+          <div id="pillar-error" class="inline-error" style="display:none"></div>
         </div>
       </div>
     `;
@@ -1741,6 +1772,7 @@ function renderPillarSection(){
       <div class="field-hint" style="margin-top:0;margin-bottom:10px">These are AI-drafted from your Foundation info. Edit any of the wording to fit how you actually think about your content.</div>
       <div id="pillar-cards">${cards}</div>
       <button class="btn btn-secondary" id="pillar-regen-btn" onclick="generatePillars(true)" style="margin-top:4px">Regenerate all 4 pillars</button>
+      <div id="pillar-error" class="inline-error" style="display:none"></div>
       <div class="field-hint" style="margin-top:8px">Regenerating replaces all 4 based on your current Foundation info. Posts you've already generated keep their original pillar tags.</div>
     </div>
   `;
@@ -1806,8 +1838,13 @@ Never use an em dash or en dash in any field. Use a period, comma, or parenthese
     saveState();
     render();
   }catch(e){
+    console.error('Pillar generation error:', e);
     if(btn){ btn.disabled = false; btn.textContent = isRegenerate ? 'Regenerate all 4 pillars' : 'Generate my 4 pillars'; }
-    alert('Something went wrong generating your pillars. Try again.');
+    const errEl = document.getElementById('pillar-error');
+    if(errEl){
+      errEl.style.display = 'block';
+      errEl.textContent = "Something went wrong generating your pillars. This is usually temporary, try again in a moment.";
+    }
   }
 }
 
@@ -1825,8 +1862,8 @@ if(typeof pdfjsLib !== 'undefined'){
 function renderUploadList(){
   if(!state.uploadedDocs || !state.uploadedDocs.length) return '';
   return state.uploadedDocs.map((doc,idx)=>`
-    <div class="upload-chip">
-      <span>${doc.name} ${doc.text ? `(${doc.text.length.toLocaleString()} characters extracted)` : ''}</span>
+    <div class="upload-chip${doc.error ? ' upload-chip-error' : ''}">
+      <span>${doc.name} ${doc.error ? '— couldn\'t read this file, try a different PDF or paste the text directly' : (doc.text ? `(${doc.text.length.toLocaleString()} characters extracted)` : '')}</span>
       <span class="remove-doc" onclick="removeUploadedDoc(${idx})">✕</span>
     </div>
   `).join('');
@@ -1898,9 +1935,12 @@ function renderVisualStepper(){
     let cls = 'vstep-item';
     if(i < idx) cls += ' done';
     else if(i === idx) cls += ' active';
+    const unlocked = isUnlocked(i);
+    if(!unlocked) cls += ' locked';
     const dotContent = i < idx ? '✓' : String(i+1).padStart(2,'0');
+    const clickHandler = unlocked ? `onclick="goTo('${s.id}')"` : '';
     return `
-      <div class="${cls}">
+      <div class="${cls}" ${clickHandler} role="${unlocked ? 'button' : ''}" ${unlocked ? 'tabindex="0"' : ''}>
         <div class="vstep-connector"></div>
         <div class="vstep-dot">${dotContent}</div>
         <div class="vstep-name">${s.label}</div>
@@ -1994,7 +2034,7 @@ function renderFoundation(){
     <p class="step-desc">This grounds every module that follows, your profile, your posts, your outreach. Fill it in once, honestly, and the rest builds on it.</p>
     <div class="grid-2">
       <div class="field">
-        <label>Your name</label>
+        <label>Your name <span class="field-recommended">Recommended</span></label>
         <input type="text" id="f-fullname" value="${i.fullName||''}" placeholder="First and Last Name" oninput="saveIntakeField('fullName', this.value)">
       </div>
       <div class="field">
@@ -2002,7 +2042,7 @@ function renderFoundation(){
         <input type="text" id="f-title" value="${i.title||''}" placeholder="e.g. Founder & LinkedIn Strategist" oninput="saveIntakeField('title', this.value)">
       </div>
       <div class="field">
-        <label>Business / brand name</label>
+        <label>Business / brand name <span class="field-recommended">Recommended</span></label>
         <input type="text" id="f-name" value="${i.name||''}" placeholder="e.g. Rowan & Co." oninput="saveIntakeField('name', this.value)">
       </div>
       <div class="field">
@@ -2012,7 +2052,7 @@ function renderFoundation(){
     </div>
 
     <div class="field">
-      <label>Who you serve</label>
+      <label>Who you serve <span class="field-recommended">Recommended</span></label>
       <div class="field-hint" style="margin-top:0;margin-bottom:10px">List 1 to 4 audience segments. For each, give a role or title, industry, and location if it matters, plus their biggest pain points if you know them.</div>
       <div id="audience-block">${renderAudienceBlock()}</div>
     </div>
@@ -2024,7 +2064,7 @@ function renderFoundation(){
     </div>
 
     <div class="field">
-      <label>Your core offer(s)</label>
+      <label>Your core offer(s) <span class="field-recommended">Recommended</span></label>
       <div class="field-hint" style="margin-top:0;margin-bottom:10px">List 1 to 3 offers. For each, give it a name and one sentence on what it is and who it's for.</div>
       <div id="offers-block">${renderOffersBlock()}</div>
     </div>
@@ -2052,7 +2092,7 @@ function renderFoundation(){
       ${i.brandVoice === 'other' ? `<textarea id="f-brandvoice-other" placeholder="Describe your brand voice in your own words" oninput="saveIntakeField('brandVoiceOther', this.value)" style="margin-top:10px">${i.brandVoiceOther||''}</textarea>${micButton('f-brandvoice-other')}` : ''}
     </div>
     <div class="field">
-      <label>What makes you different</label>
+      <label>What makes you different <span class="field-recommended">Recommended</span></label>
       <textarea id="f-different" placeholder="Why a client picks you over the next option" oninput="saveIntakeField('different', this.value)">${i.different||''}</textarea>
       ${micButton('f-different')}
     </div>
@@ -2078,13 +2118,14 @@ function renderFoundation(){
     <div class="field">
       <label>What results can you point to?</label>
       <div class="field-hint" style="margin-top:0;margin-bottom:10px">Optional. Share any numbers, outcomes, or notable names you can reference, clients, revenue or growth figures, project outcomes, media features, speaking engagements. If you're early-stage or don't have hard numbers yet, share your strongest qualitative outcome instead (a transformation story, a specific problem you solved).</div>
-      <textarea id="f-proofpoints" placeholder="e.g. Helped a client go from 200 to 3,000 profile views a month in 90 days. Spoke at the 2025 Women in Business Summit. Grew a coaching business from $0 to $40k in bookings in year one." oninput="saveIntakeField('proofPoints', this.value)">${i.proofPoints||''}</textarea>
+      <textarea id="f-proofpoints" placeholder="e.g. Grew a coaching business from $0 to $40k in bookings in year one" oninput="saveIntakeField('proofPoints', this.value)">${i.proofPoints||''}</textarea>
       ${micButton('f-proofpoints')}
     </div>
 
     <div class="field">
       <label>Products & services</label>
-      <textarea id="f-products" placeholder="A short list of what you offer, with pricing tiers or packages if relevant. This feeds your profile and any company materials, so it only needs to be entered once." oninput="saveIntakeField('productsServices', this.value)">${i.productsServices||''}</textarea>
+      <textarea id="f-products" placeholder="e.g. 1:1 coaching, $500/mo, or a self-paced course" oninput="saveIntakeField('productsServices', this.value)">${i.productsServices||''}</textarea>
+      <div class="field-hint">Pricing or packages if relevant. Feeds your profile and other materials, so it only needs entering once.</div>
       ${micButton('f-products')}
     </div>
     <div class="field">
@@ -2312,7 +2353,7 @@ Use - for list items within a module. No preamble, no closing remarks, no markdo
   }catch(e){
     console.error('Profile generation error:', e);
     stopWaitMessages(waitTimers);
-    box.innerHTML = `<div class="out-p">Something went wrong generating this. Try again.<br><span style="font-size:11px;color:var(--ink-pale)">Detail: ${(e && e.message) ? e.message : 'unknown error'}</span></div>`;
+    box.innerHTML = `<div class="inline-error">Something went wrong generating this. This is usually temporary, try again in a moment. If it keeps happening, let Dee know.</div>`;
     btn.disabled = false;
   }
 }
@@ -2517,8 +2558,9 @@ No preamble, no closing remarks, no markdown bold asterisks.${voiceProfileInject
     saveState();
     render();
   }catch(e){
+    console.error('Content generation error:', e);
     stopWaitMessages(waitTimers);
-    box.innerHTML = `<div class="out-p">Something went wrong generating this. Try again.</div>`;
+    box.innerHTML = `<div class="inline-error">Something went wrong generating this. This is usually temporary, try again in a moment. If it keeps happening, let Dee know.</div>`;
     btn.disabled = false;
   }
 }
@@ -2606,8 +2648,9 @@ Use - for list items outside of the message scripts themselves.`;
     saveState();
     render();
   }catch(e){
+    console.error('Audience generation error:', e);
     stopWaitMessages(waitTimers);
-    box.innerHTML = `<div class="out-p">Something went wrong generating this. Try again.</div>`;
+    box.innerHTML = `<div class="inline-error">Something went wrong generating this. This is usually temporary, try again in a moment. If it keeps happening, let Dee know.</div>`;
     btn.disabled = false;
   }
 }
@@ -2674,8 +2717,9 @@ Use - for list items. No preamble, no closing remarks, no markdown bold asterisk
     saveState();
     render();
   }catch(e){
+    console.error('Offline generation error:', e);
     stopWaitMessages(waitTimers);
-    box.innerHTML = `<div class="out-p">Something went wrong generating this. Try again.</div>`;
+    box.innerHTML = `<div class="inline-error">Something went wrong generating this. This is usually temporary, try again in a moment. If it keeps happening, let Dee know.</div>`;
     btn.disabled = false;
   }
 }
