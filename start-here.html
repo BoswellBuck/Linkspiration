@@ -2780,6 +2780,21 @@ function formatContentOutput(raw){
   const parts = rest.split(/(?=###\s)/i);
   let html = preamble ? formatOutput(preamble) : '';
 
+  // Rather than hunting for where "Caption:" starts and ends (fragile if the
+  // model ever skips that exact label or reorders fields), classify every
+  // line against the known metadata labels. Anything that doesn't match one
+  // of them falls through as caption body, so the caption never depends on
+  // finding one specific label correctly, and metadata never gets duplicated.
+  const LABELS = {
+    pillar: /^[-•]?\s*Pillar\s*:\s*(.+)/i,
+    audience: /^[-•]?\s*Audience\s*:\s*(.+)/i,
+    hook: /^[-•]?\s*Hook\s*:\s*(.+)/i,
+    characters: /^[-•]?\s*Characters\s*:\s*(.+)/i,
+    cta: /^[-•]?\s*CTA\s*:\s*(.+)/i,
+    whyItWorks: /^[-•]?\s*Why it works\s*:\s*(.+)/i,
+    caption: /^[-•]?\s*Caption\s*:\s*(.*)/i
+  };
+
   parts.forEach(part => {
     const isPost = /^###\s*Post\s*\d+/i.test(part.trim());
     if(!isPost){
@@ -2789,32 +2804,42 @@ function formatContentOutput(raw){
     const titleMatch = part.match(/^###\s*Post\s*(\d+)[:\-]?\s*(.*)/i);
     const num = titleMatch ? titleMatch[1] : '';
     const label = titleMatch ? titleMatch[2].split('\n')[0].trim() : '';
-    const pillar = (part.match(/[-•]?\s*Pillar:\s*(.+)/i) || [])[1] || '';
-    const audience = (part.match(/[-•]?\s*Audience:\s*(.+)/i) || [])[1] || '';
-    const hook = (part.match(/[-•]?\s*Hook:\s*(.+)/i) || [])[1] || '';
-    const captionMatch = part.match(/[-•]?\s*Caption:\s*([\s\S]*?)(?:\n\s*[-•]?\s*Characters:|\n\s*[-•]?\s*CTA:|$)/i);
-    let caption = captionMatch ? captionMatch[1].trim() : '';
-    const characters = (part.match(/[-•]?\s*Characters:\s*(.+)/i) || [])[1] || '';
-    const cta = (part.match(/[-•]?\s*CTA:\s*(.+)/i) || [])[1] || '';
-    const whyItWorks = (part.match(/[-•]?\s*Why it works:\s*(.+)/i) || [])[1] || '';
-    const captionId = 'post-caption-' + num + '-' + Math.random().toString(36).slice(2,7);
 
-    // Safety net: if the Caption field couldn't be found at all (unexpected
-    // formatting from the model), fall back to showing the full raw block
-    // rather than silently rendering an empty post.
-    if(!caption){
-      caption = part.replace(/^###\s*Post\s*\d+[:\-]?\s*.*/i, '').trim();
-    }
+    const bodyLines = part.split('\n').slice(1); // drop the "### Post N: label" line itself
+    const fields = { pillar:'', audience:'', hook:'', characters:'', cta:'', whyItWorks:'' };
+    const captionLines = [];
+
+    bodyLines.forEach(lineRaw => {
+      const line = lineRaw.trim();
+      if(!line) return;
+      let matched = false;
+      for(const key of ['pillar','audience','hook','characters','cta','whyItWorks']){
+        const m = line.match(LABELS[key]);
+        if(m){ fields[key] = m[1].trim(); matched = true; break; }
+      }
+      if(matched) return;
+      const capMatch = line.match(LABELS.caption);
+      if(capMatch){
+        if(capMatch[1].trim()) captionLines.push(capMatch[1].trim());
+        return;
+      }
+      // not a recognized label, so it's caption body content, whether the
+      // model explicitly labeled "Caption:" or not
+      captionLines.push(line);
+    });
+
+    const caption = captionLines.join(' ').trim();
+    const captionId = 'post-caption-' + num + '-' + Math.random().toString(36).slice(2,7);
 
     html += `<div class="out-module-block post-card">
       <div class="post-card-meta">
         <div class="out-h" style="margin-top:0">Post ${num}${label ? ': ' + label : ''}</div>
-        ${pillar ? `<div class="post-meta-row"><span class="post-meta-label">Pillar</span>${pillar}</div>` : ''}
-        ${audience ? `<div class="post-meta-row"><span class="post-meta-label">Audience</span>${audience}</div>` : ''}
-        ${hook ? `<div class="post-meta-row"><span class="post-meta-label">Hook</span>${hook}</div>` : ''}
-        ${cta ? `<div class="post-meta-row"><span class="post-meta-label">CTA</span>${cta}</div>` : ''}
-        ${whyItWorks ? `<div class="post-meta-row"><span class="post-meta-label">Why it works</span>${whyItWorks}</div>` : ''}
-        ${characters ? `<div class="post-meta-row"><span class="post-meta-label">Characters</span>${characters}</div>` : ''}
+        ${fields.pillar ? `<div class="post-meta-row"><span class="post-meta-label">Pillar</span>${fields.pillar}</div>` : ''}
+        ${fields.audience ? `<div class="post-meta-row"><span class="post-meta-label">Audience</span>${fields.audience}</div>` : ''}
+        ${fields.hook ? `<div class="post-meta-row"><span class="post-meta-label">Hook</span>${fields.hook}</div>` : ''}
+        ${fields.cta ? `<div class="post-meta-row"><span class="post-meta-label">CTA</span>${fields.cta}</div>` : ''}
+        ${fields.whyItWorks ? `<div class="post-meta-row"><span class="post-meta-label">Why it works</span>${fields.whyItWorks}</div>` : ''}
+        ${fields.characters ? `<div class="post-meta-row"><span class="post-meta-label">Characters</span>${fields.characters}</div>` : ''}
       </div>
       <div class="post-caption-wrap">
         <div class="post-caption-label">Ready to copy <button type="button" class="post-copy-btn" onclick="copyPostCaption('${captionId}', this)">Copy post</button></div>
