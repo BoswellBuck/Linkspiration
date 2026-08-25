@@ -131,6 +131,17 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
 @media(min-width:1300px){ .content{max-width:1120px; padding:44px 56px} }
 @media(min-width:1650px){ .content{max-width:1300px} }
 .step-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--gold-deep);margin-bottom:8px}
+.nudge-banner{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--gold);border-radius:var(--radius);padding:14px 16px 14px 20px;margin-bottom:22px}
+.nudge-banner-text{font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.5}
+.nudge-banner-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.nudge-btn{font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:700;color:var(--gold);background:var(--ink);border:none;border-radius:20px;padding:8px 16px;cursor:pointer;white-space:nowrap}
+.nudge-btn:hover{opacity:.85}
+.nudge-dismiss{background:none;border:none;color:var(--ink);opacity:.55;font-size:14px;cursor:pointer;padding:4px}
+.nudge-dismiss:hover{opacity:1}
+@media(max-width:600px){
+  .nudge-banner{flex-direction:column;align-items:flex-start}
+  .nudge-banner-actions{width:100%;justify-content:space-between}
+}
 .step-title{font-size:26px;color:var(--ink);margin-bottom:8px;font-weight:700}
 .step-desc{font-size:13.5px;color:rgba(20,18,15,0.62);line-height:1.7;margin-bottom:26px;max-width:600px}
 
@@ -453,7 +464,10 @@ let state = {
   pillarsGeneratedAt: null,
   selectedPillars: [],
   schedule: null,
-  storyBank: []
+  storyBank: [],
+  contentGeneratedAt: null,
+  audienceGeneratedAt: null,
+  dismissedNudges: {}
 };
 
 /* ============ PERSISTENCE ============ */
@@ -1355,6 +1369,81 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
+/* ============ SMART NUDGE ============
+   A rule-based reminder, not an AI chatbot: checks how stale a few key
+   things are (pillars, posts, outreach) and surfaces at most one, with a
+   dismiss that respects a cooldown so it never nags every single login. */
+const NUDGE_STALE_DAYS = 5;
+const NUDGE_PILLARS_STALE_DAYS = 7;
+const NUDGE_DISMISS_COOLDOWN_DAYS = 2;
+
+function daysSince(isoString){
+  if(!isoString) return Infinity;
+  const then = new Date(isoString).getTime();
+  if(isNaN(then)) return Infinity;
+  return (Date.now() - then) / (1000 * 60 * 60 * 24);
+}
+
+function isNudgeCooledDown(key){
+  const dismissedAt = state.dismissedNudges && state.dismissedNudges[key];
+  if(!dismissedAt) return true;
+  return daysSince(dismissedAt) >= NUDGE_DISMISS_COOLDOWN_DAYS;
+}
+
+function computeNudge(){
+  const candidates = [
+    {
+      key: 'pillars',
+      stale: daysSince(state.pillarsGeneratedAt) >= NUDGE_PILLARS_STALE_DAYS,
+      message: state.pillarsGeneratedAt ? "Your content pillars haven't been refreshed in a while. A quick review keeps your posts sharp." : "You haven't generated content pillars yet. They're what everything else in First Posts builds from.",
+      buttonLabel: 'Review pillars',
+      targetStep: 'content'
+    },
+    {
+      key: 'content',
+      stale: !!state.pillarsGeneratedAt && daysSince(state.contentGeneratedAt) >= NUDGE_STALE_DAYS,
+      message: "It's been a few days since your last batch of posts. A few minutes now keeps your rhythm going.",
+      buttonLabel: 'Generate posts',
+      targetStep: 'content'
+    },
+    {
+      key: 'outreach',
+      stale: daysSince(state.audienceGeneratedAt) >= NUDGE_STALE_DAYS,
+      message: "Your outreach plan could use a refresh, or it's time to send this week's connection requests.",
+      buttonLabel: 'Open Audience & Outreach',
+      targetStep: 'audience'
+    }
+  ];
+  return candidates.find(c => c.stale && isNudgeCooledDown(c.key)) || null;
+}
+
+let nudgeShownThisSession = false;
+
+function renderNudgeBanner(){
+  if(nudgeShownThisSession) return '';
+  const nudge = computeNudge();
+  if(!nudge) return '';
+  nudgeShownThisSession = true;
+  return `
+    <div class="nudge-banner" id="nudge-banner">
+      <div class="nudge-banner-text">${nudge.message}</div>
+      <div class="nudge-banner-actions">
+        <button class="nudge-btn" onclick="goTo('${nudge.targetStep}')">${nudge.buttonLabel}</button>
+        <button class="nudge-dismiss" onclick="dismissNudge('${nudge.key}')" aria-label="Dismiss">✕</button>
+      </div>
+    </div>
+  `;
+}
+
+function dismissNudge(key){
+  if(!state.dismissedNudges) state.dismissedNudges = {};
+  state.dismissedNudges[key] = new Date().toISOString();
+  saveState();
+  const el = document.getElementById('nudge-banner');
+  if(el) el.remove();
+}
+
+
 function storyBankContext(){
   if(!state.storyBank || !state.storyBank.length) return '';
   return state.storyBank.map((s,i) => {
@@ -1887,6 +1976,7 @@ function render(){
   else if(state.step==='offline') body = renderOffline();
 
   c.innerHTML = `
+    ${renderNudgeBanner()}
     ${renderProgressSummary()}
     ${renderStepNav()}
     <div class="step-eyebrow">${meta.eyebrow}</div>
@@ -2422,6 +2512,7 @@ No preamble, no closing remarks, no markdown bold asterisks.${voiceProfileInject
     const result = await callClaude(prompt, 4200);
     stopWaitMessages(waitTimers);
     state.outputs.content = result;
+    state.contentGeneratedAt = new Date().toISOString();
     state.completed.content = true;
     saveState();
     render();
@@ -2510,6 +2601,7 @@ Use - for list items outside of the message scripts themselves.`;
     const result = await callClaude(prompt, 4300);
     stopWaitMessages(waitTimers);
     state.outputs.audience = result;
+    state.audienceGeneratedAt = new Date().toISOString();
     state.completed.audience = true;
     saveState();
     render();
