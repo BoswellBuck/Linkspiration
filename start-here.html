@@ -227,7 +227,8 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
 .post-card-meta{background:var(--gold-pale);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px}
 .post-meta-row{font-size:12.5px;line-height:1.6;color:var(--ink)}
 .post-meta-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gold-deep);margin-right:8px}
-.post-caption-label{display:flex;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:8px}
+.post-caption-label{display:flex;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);margin-top:14px;margin-bottom:8px}
+.post-reminder{font-size:12px;font-style:italic;color:var(--ink-soft);margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)}
 .post-copy-btn{font-family:'Space Grotesk',sans-serif;font-size:11.5px;font-weight:700;color:var(--ink);background:var(--gold);border:none;border-radius:6px;padding:5px 12px;cursor:pointer;text-transform:none;letter-spacing:normal}
 .post-copy-btn:hover{background:var(--gold-light)}
 .post-caption{font-size:14.5px;line-height:1.7;color:var(--ink);white-space:pre-wrap}
@@ -368,6 +369,10 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
       <div class="consent-row">
         <input type="checkbox" id="consent-privacy" onchange="updateConsentState()">
         <label for="consent-privacy">I have read and agree to the <a href="#" onclick="openLegalModal('privacy');return false;">Privacy Policy</a></label>
+      </div>
+      <div class="consent-row">
+        <input type="checkbox" id="consent-nda" onchange="updateConsentState()">
+        <label for="consent-nda">I agree to keep the Unsilenced platform, methodology, and any materials shared with me confidential, and not share, copy, or redistribute them.</label>
       </div>
     </div>
     <div class="login-error" id="login-error" style="color:#E0917E"></div>
@@ -977,7 +982,8 @@ function updateConsentState(){
   const submitBtn = document.getElementById('auth-submit-btn');
   const tosOk = document.getElementById('consent-tos').checked;
   const privacyOk = document.getElementById('consent-privacy').checked;
-  submitBtn.disabled = !(tosOk && privacyOk);
+  const ndaOk = document.getElementById('consent-nda').checked;
+  submitBtn.disabled = !(tosOk && privacyOk && ndaOk);
 }
 
 async function doAuth(){
@@ -1001,12 +1007,13 @@ async function doAuth(){
     legalName = document.getElementById('auth-legalname').value.trim();
     const tosOk = document.getElementById('consent-tos').checked;
     const privacyOk = document.getElementById('consent-privacy').checked;
+    const ndaOk = document.getElementById('consent-nda').checked;
     if(!legalName){
       errorEl.textContent = 'Enter your full legal name.';
       return;
     }
-    if(!(tosOk && privacyOk)){
-      errorEl.textContent = 'You must agree to the Terms of Service and Privacy Policy to create an account.';
+    if(!(tosOk && privacyOk && ndaOk)){
+      errorEl.textContent = 'You must agree to the Terms of Service, Privacy Policy, and confidentiality agreement to create an account.';
       return;
     }
   }
@@ -2154,7 +2161,7 @@ function renderProfile(){
   return `
     ${renderVoiceModule()}
     <p class="step-desc">This generates the full profile strategy: Headline, About, Banner, Featured, Keywords/Skills/Interests, and Call-to-Action, ready to copy straight onto LinkedIn. Add anything you want reflected below, then generate.</p>
-    ${deeNotesBlock('profile','e.g. lean into her being a keynote speaker, avoid buzzwords like "passionate"')}
+    ${deeNotesBlock('profile','e.g. lean into her being a keynote speaker, avoid buzzwords like "passionate"', hasOutput ? 'profile-gen-btn' : null)}
     <div class="btn-row">
       ${hasOutput
         ? `<button class="btn btn-secondary" id="profile-gen-btn" onclick="generateProfile(true)">Regenerate profile strategy</button>`
@@ -2365,7 +2372,7 @@ function renderContent(){
   return `
     <p class="step-desc">First posts set the tone for how you show up. These are drafted to work with LinkedIn's algorithm, early engagement, dwell time, genuine conversation, not against it.</p>
     ${renderPillarToggles()}
-    ${deeNotesBlock('content','e.g. she has a launch coming up, mention her recent keynote, focus on the retreat audience this round')}
+    ${deeNotesBlock('content','e.g. she has a launch coming up, mention her recent keynote, focus on the retreat audience this round', hasOutput ? 'content-gen-btn' : null)}
     <div class="btn-row">
       ${hasOutput
         ? `<button class="btn btn-secondary" id="content-gen-btn" onclick="generateContent(true)">Regenerate posts</button>`
@@ -2612,7 +2619,7 @@ ${allPillarsContext() || '(not yet drafted)'}
 
 ${notes ? `Additional guidance from Dee (follow closely): ${notes}` : ''}
 
-Produce this document in five parts, in this exact order, using ### as the header. This order is strict: write each part completely before starting the next, and never let content from a later part appear earlier, even in passing. Use - for every list item throughout the whole document, including inside the "Where To Find Them" sections, so nothing renders as a dense unbroken paragraph. No markdown bold asterisks anywhere, including inside scripts and messages.
+Produce this document in six parts, in this exact order, using ### as the header. This order is strict: write each part completely before starting the next, and never let content from a later part appear earlier, even in passing. Use - for every list item throughout the whole document, including inside the "Where To Find Them" sections, so nothing renders as a dense unbroken paragraph. No markdown bold asterisks anywhere, including inside scripts and messages.
 
 ### Part 1: Are You Ready to Reach Out
 5-6 honest, specific indicators the client can use to self-assess whether they personally are ready to start outreach, each as its own line starting with -. These are signals about the client's own readiness, not signals from a prospect they're talking to. Ground these in real markers: their profile reflects who they are now, they've posted content that sounds like them, they can say in one sentence who they help and how, they have a simple way to track who they've contacted. End with one honest reassurance that readiness is a feeling to notice, not a bar to clear perfectly before starting.
@@ -2630,15 +2637,26 @@ WHERE TO FIND THEM
 - Keywords and phrases this client should search to find them directly: list 3-5 (job titles, industry terms, role-specific language)
 - Where they're active: one line naming groups or the type of posts/threads they engage with. No hashtags anywhere.
 
-CONNECTION SCRIPT
-One connection request template, under 300 characters. The opening line must be about the recipient, something specific and genuine about their actual work, their industry, something they might have posted, or a real detail tied to this segment, never about the client sending the message. Do not build the opener around a shared struggle or a situation framed through the client's own business, even indirectly, that still centers the client, not the recipient. If the client's own work is mentioned at all, it comes later, briefly, as a light aside, never as the second line immediately following the opener, and never phrased as "I help X with Y." For the Referral Partners segment specifically, the script's whole framing must be different from the client-segment scripts: this is a peer reaching out about mutual referrals or collaboration, not outreach to a future client, and it should read that way from the first line. Close every script with a soft, low-pressure invitation to connect, not a pitch. Never open with "I noticed" or "I came across your profile," vary openings naturally across segments.
+Repeat this full SEGMENT / WHERE TO FIND THEM block for every segment, back to back, so each one reads as a complete, usable unit on its own.
 
-Repeat this full SEGMENT / WHERE TO FIND THEM / CONNECTION SCRIPT block for every segment, back to back, so each one reads as a complete, usable unit on its own.
+### Part 3: Connection Request Scripts
+Three connection request templates (under 300 characters each), each written for a different one of the segments (including referral partners) defined in Part 2, chosen to represent the range of segments produced. Label each with which segment it's for.
 
-### Part 3: Follow-Up Message Sequence
-One shared 3-message follow-up sequence for after any of the above connect: message 1 (thank you, no ask), message 2 (value or resource, sent a few days later, referencing whichever content pillar fits best depending on which segment this follow-up is going to), message 3 (soft invitation to a conversation). Note briefly how message 2 should shift depending on the segment.
+Style rules for these specifically:
+- No dramatic or "story voice" phrasing. Nobody says "great to connect with people doing real work" or "love to see what you're building" in real life.
+- Do not narrate the act of connecting ("reaching out because," "wanted to connect," "connecting so I can").
+- Keep it plain: what you noticed, what you do, done. Message 1 can be as short as "Hi [Name], we're in [shared group] together. Wanted to connect." Do not pad it.
+- Prioritize brevity over warmth. Shorter reads as more real.
+- The opening line must be about the recipient, something specific and genuine about their actual work, their industry, something they might have posted, or a real detail tied to this segment, never about the client sending the message. For the Referral Partners template specifically, the framing must read as a peer reaching out about mutual referrals or collaboration, not outreach to a future client.
 
-### Part 4: Weekly Outreach Rhythm
+### Part 4: Follow-Up Message Sequence
+A 3-message follow-up sequence for after they accept, referencing the specific content pillar most relevant to that segment in message 2.
+Message 1 (thank you): as short as "Thanks for connecting, [Name]." No ask, no extra line.
+Message 2 (value, sent a few days later): reference one specific thing, plainly. No "I wanted to share" framing, just state it.
+Message 3 (soft invite, only if engaged): give an easy out. "No pressure either way" or similar.
+Same style rules apply: no self-narration, no dramatic phrasing, shorter over longer.
+
+### Part 5: Weekly Outreach Rhythm
 One realistic total weekly volume across all segments combined, not a separate volume multiplied per segment. Assume this client realistically has about 15-20 minutes a day for outreach, not hours, and is running their actual business the rest of the time. If a sustainable number feels smaller than what sounds ambitious, use the honest, sustainable number, prioritize something the client will actually keep doing over something impressive on paper. State total connection requests per week, total comments on others' posts per week, and total follow-ups per week, as a short list, not a paragraph.
 
 Use - for list items outside of the message scripts themselves.`;
@@ -2746,16 +2764,34 @@ function addNoteSuggestion(key, text, btn){
   btn.classList.add('used');
 }
 
-function deeNotesBlock(key, placeholder){
+function deeNotesBlock(key, placeholder, regenBtnId){
   const suggestions = NOTE_SUGGESTIONS[key] || [];
   const pills = suggestions.map(text => `<div class="sugg-pill" onclick="addNoteSuggestion('${key}', '${text.replace(/'/g,"\\'")}', this)"><span class="plus">+</span> ${text}</div>`).join('');
+  const inputHandler = regenBtnId
+    ? `state.deeNotes['${key}']=this.value; saveState(); updateRegenLabel('${regenBtnId}', this.value);`
+    : `state.deeNotes['${key}']=this.value; saveState();`;
   return `
     <div class="dee-notes-wrap">
       <div class="dee-notes-label">✎ Anything else you want reflected?</div>
-      <textarea class="dee-notes-input" id="dee-notes-${key}" placeholder="${placeholder}" oninput="state.deeNotes['${key}']=this.value; saveState();">${state.deeNotes[key]||''}</textarea>
+      <textarea class="dee-notes-input" id="dee-notes-${key}" placeholder="${placeholder}" oninput="${inputHandler}">${state.deeNotes[key]||''}</textarea>
       ${pills ? `<div class="field-hint" style="margin:8px 0 4px">Tap to add to the notes above:</div><div class="pill-row">${pills}</div>` : ''}
     </div>
   `;
+}
+
+// Swaps a Regenerate button's label to "Regenerate with notes" once the
+// notes field for that section actually has content, back to its plain
+// label if cleared. Only touches buttons currently showing "Regenerate...",
+// never the initial "Generate..." button.
+function updateRegenLabel(btnId, notesValue){
+  const btn = document.getElementById(btnId);
+  if(!btn) return;
+  const hasNotes = !!(notesValue && notesValue.trim());
+  if(!btn.dataset.baseLabel){
+    // first time touched: remember the plain "Regenerate X" label so we can restore it
+    btn.dataset.baseLabel = btn.textContent.replace(' with notes', '');
+  }
+  btn.textContent = hasNotes ? (btn.dataset.baseLabel + ' with notes') : btn.dataset.baseLabel;
 }
 
 /* ============ PRINT ============ */
@@ -2986,8 +3022,9 @@ function formatContentOutput(raw){
         ${fields.characters ? `<div class="post-meta-row"><span class="post-meta-label">Characters</span>${fields.characters}</div>` : ''}
       </div>
       <div class="post-caption-wrap">
-        <div class="post-caption-label">Ready to copy <button type="button" class="post-copy-btn" onclick="copyPostCaption('${captionId}', this)">Copy post</button></div>
         <div class="post-caption" id="${captionId}">${caption}</div>
+        <div class="post-reminder">This is your draft. Make it yours before you post it, your voice is what makes it work.</div>
+        <div class="post-caption-label">Ready to copy <button type="button" class="post-copy-btn" onclick="copyPostCaption('${captionId}', this)">Copy post</button></div>
       </div>
     </div>`;
   });
