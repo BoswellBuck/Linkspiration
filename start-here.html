@@ -2514,11 +2514,16 @@ CONTENT RULES (non-negotiable, apply to every post):
 - Before finalizing each post, silently ask: does this actually convert, meaning would a real reader in this audience segment feel enough to comment, DM, or click, not just skim past. If a sentence sounds nice but doesn't move someone toward that action, cut or rewrite it. Every post is written to convert, not just to farm likes.
 - No hashtags anywhere in the caption. Not at the end, not inline. None.
 
-BATCH DISTINCTIVENESS (non-negotiable, check this across all 5 posts together before finalizing):
-- The 5 posts must not read like variations of the same post. Vary the hook style across the batch: don't open more than one post with a question, don't open more than one with "I," don't open more than one with a statistic or bold claim. Mix it up on purpose.
-- Vary the structural approach across posts: a personal story, a client example, a direct opinion or contrarian take, a lesson learned from a mistake, a quick tip or reframe. Don't let all 5 follow the same shape (setup, insight, CTA) with just the words swapped.
-- Vary sentence rhythm from post to post, not just within each post. If post 1 leans short and punchy throughout, post 2 should read differently, not the same clipped cadence with new words dropped in.
-- Before finalizing, read all 5 captions back to back. If two of them could be describing the same underlying point with a different coat of paint, rewrite one of them to come at it from a genuinely different angle.
+POST FORMATS (assigned, not optional — this is what actually prevents repetition, a self-check alone isn't enough):
+Each of the 5 posts is assigned a different format below. Follow the assigned format for its post number exactly. Do not swap formats between posts, and do not let two posts drift into the same shape even if they end up covering a similar pillar.
+
+- Post 1 — Personal story or behind-the-scenes moment. A specific thing that happened, told in first person. Opens by dropping the reader into the moment, not with a lesson stated upfront.
+- Post 2 — Myth-bust or reframe. Names a common misconception in this client's field and corrects it. Opens with the misconception itself or a flat contrarian statement, not a question.
+- Post 3 — Client win or proof point. Grounded in a real result (pull from the client's proof points or saved stories below if available; if nothing specific is available, a plausible, non-fabricated pattern based on their actual offer). Opens with the outcome or the moment the client realized something worked.
+- Post 4 — Practical tip or framework. Teaches one concrete, actionable thing the reader can use today. Opens by naming the specific problem the tip solves.
+- Post 5 — Direct opinion or stance. A belief this client holds about their industry, stated plainly, built to invite agreement or pushback in the comments. Opens with the opinion itself, not a softened lead-in.
+
+Because each post has a different job, they should also pull from different source material where the client's foundation info supports it, don't build two posts around the same underlying fact or example just because it's the strongest one available.
 
 Client foundation:
 ${intakeSummary()}
@@ -2530,10 +2535,11 @@ ${selectedPillarContext() ? `Content pillars to draw from for this batch (every 
 ${storyBankContext() ? `This client has saved real stories and anecdotes below. Where one genuinely fits a post's pillar and audience, use the specific, true details from it instead of inventing a generic scenario. Don't force a story into a post it doesn't fit, and don't use the same story twice in this batch:\n${storyBankContext()}\n` : ''}
 ${notes ? `Helpful notes for this client (follow closely): ${notes}` : ''}
 
-Produce 5 first-post drafts. For each post use this exact structure:
+Produce 5 first-post drafts, one per assigned format above, in order. For each post use this exact structure:
 ### Post [number]: [short internal label]
 - Pillar: which content pillar this post draws from, if pillars were provided above, otherwise omit this line
 - Audience: which segment this post speaks to
+- Format: which of the 5 assigned formats above this post is (personal story, myth-bust, client win, practical tip, or opinion)
 - Hook: the first line, written to stop the scroll
 - Caption: the full post text (800-900 characters including spaces), in the client's voice, plain natural paragraphs, no internal formatting
 - Characters: [exact count of the caption above]
@@ -2924,6 +2930,7 @@ function formatContentOutput(raw){
   const LABELS = {
     pillar: /^[-•]?\s*Pillar\s*:\s*(.+)/i,
     audience: /^[-•]?\s*Audience\s*:\s*(.+)/i,
+    format: /^[-•]?\s*Format\s*:\s*(.+)/i,
     hook: /^[-•]?\s*Hook\s*:\s*(.+)/i,
     characters: /^[-•]?\s*Characters\s*:\s*(.+)/i,
     cta: /^[-•]?\s*CTA\s*:\s*(.+)/i,
@@ -2942,14 +2949,14 @@ function formatContentOutput(raw){
     const label = titleMatch ? titleMatch[2].split('\n')[0].trim() : '';
 
     const bodyLines = part.split('\n').slice(1); // drop the "### Post N: label" line itself
-    const fields = { pillar:'', audience:'', hook:'', characters:'', cta:'', whyItWorks:'' };
+    const fields = { pillar:'', audience:'', format:'', hook:'', characters:'', cta:'', whyItWorks:'' };
     const captionLines = [];
 
     bodyLines.forEach(lineRaw => {
       const line = lineRaw.trim();
       if(!line) return;
       let matched = false;
-      for(const key of ['pillar','audience','hook','characters','cta','whyItWorks']){
+      for(const key of ['pillar','audience','format','hook','characters','cta','whyItWorks']){
         const m = line.match(LABELS[key]);
         if(m){ fields[key] = m[1].trim(); matched = true; break; }
       }
@@ -2972,6 +2979,7 @@ function formatContentOutput(raw){
         <div class="out-h" style="margin-top:0">Post ${num}${label ? ': ' + label : ''}</div>
         ${fields.pillar ? `<div class="post-meta-row"><span class="post-meta-label">Pillar</span>${fields.pillar}</div>` : ''}
         ${fields.audience ? `<div class="post-meta-row"><span class="post-meta-label">Audience</span>${fields.audience}</div>` : ''}
+        ${fields.format ? `<div class="post-meta-row"><span class="post-meta-label">Format</span>${fields.format}</div>` : ''}
         ${fields.hook ? `<div class="post-meta-row"><span class="post-meta-label">Hook</span>${fields.hook}</div>` : ''}
         ${fields.cta ? `<div class="post-meta-row"><span class="post-meta-label">CTA</span>${fields.cta}</div>` : ''}
         ${fields.whyItWorks ? `<div class="post-meta-row"><span class="post-meta-label">Why it works</span>${fields.whyItWorks}</div>` : ''}
