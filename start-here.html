@@ -377,6 +377,9 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
     </div>
     <div class="login-error" id="login-error" style="color:#E0917E"></div>
     <button class="btn btn-gold" id="auth-submit-btn" style="width:100%;justify-content:center" onclick="doAuth()">Log In</button>
+    <div id="forgot-password-row" style="text-align:center;margin-top:14px">
+      <a href="#" onclick="openForgotPassword();return false;" style="font-size:12.5px;color:var(--ink-soft);text-decoration:underline">Forgot your password?</a>
+    </div>
   </div>
 </div>
 
@@ -391,6 +394,53 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
     <div class="legal-modal-footer">
       <button class="btn btn-secondary" onclick="closeLegalModal()">Close</button>
       <button class="btn btn-gold" id="legal-modal-agree-btn" onclick="agreeFromModal()">I've read this, mark as agreed</button>
+    </div>
+  </div>
+</div>
+
+<div class="legal-modal-overlay" id="forgot-password-overlay" onclick="if(event.target===this)closeForgotPassword()">
+  <div class="legal-modal" style="max-width:420px">
+    <div class="legal-modal-header">
+      <h3>Reset your password</h3>
+      <button class="legal-modal-close" onclick="closeForgotPassword()">✕</button>
+    </div>
+    <div class="legal-modal-body" style="padding:24px">
+      <div id="forgot-password-form">
+        <p style="font-size:13px;color:var(--ink-soft);margin-bottom:16px;line-height:1.5">Enter the email on your account. We'll send a link to reset your password.</p>
+        <div class="login-field">
+          <label>Email</label>
+          <input type="email" id="forgot-password-email" placeholder="you@business.com" onkeydown="if(event.key==='Enter')sendPasswordReset()">
+        </div>
+        <div id="forgot-password-error" class="inline-error" style="display:none"></div>
+        <button class="btn btn-gold btn-full" style="margin-top:6px" id="forgot-password-send-btn" onclick="sendPasswordReset()">Send reset link</button>
+      </div>
+      <div id="forgot-password-sent" style="display:none;text-align:center">
+        <p style="font-size:14px;color:var(--ink);line-height:1.6">Check your email for a link to reset your password. It can take a minute or two to arrive, and don't forget to check spam.</p>
+        <button class="btn btn-secondary btn-full" style="margin-top:16px" onclick="closeForgotPassword()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="legal-modal-overlay" id="set-new-password-overlay">
+  <div class="legal-modal" style="max-width:420px">
+    <div class="legal-modal-header">
+      <h3>Set a new password</h3>
+    </div>
+    <div class="legal-modal-body" style="padding:24px">
+      <div id="set-new-password-form">
+        <p style="font-size:13px;color:var(--ink-soft);margin-bottom:16px;line-height:1.5">Choose a new password for your account.</p>
+        <div class="login-field">
+          <label>New password</label>
+          <input type="password" id="new-password-input" placeholder="At least 6 characters" onkeydown="if(event.key==='Enter')submitNewPassword()">
+        </div>
+        <div id="set-new-password-error" class="inline-error" style="display:none"></div>
+        <button class="btn btn-gold btn-full" style="margin-top:6px" id="set-new-password-btn" onclick="submitNewPassword()">Save new password</button>
+      </div>
+      <div id="set-new-password-done" style="display:none;text-align:center">
+        <p style="font-size:14px;color:var(--ink);line-height:1.6">Your password's been updated. Log in below with your new password.</p>
+        <button class="btn btn-secondary btn-full" style="margin-top:16px" onclick="closeSetNewPasswordScreen()">Continue to log in</button>
+      </div>
     </div>
   </div>
 </div>
@@ -804,6 +854,7 @@ function syncAuthUI(){
   const tabLogin = document.getElementById('auth-tab-login');
   const legalNameField = document.getElementById('auth-legalname-field');
   const consentBlock = document.getElementById('auth-consent-block');
+  const forgotRow = document.getElementById('forgot-password-row');
   const errorEl = document.getElementById('login-error');
   if(errorEl) errorEl.textContent = '';
 
@@ -815,6 +866,7 @@ function syncAuthUI(){
     if(tabLogin) tabLogin.classList.remove('active');
     legalNameField.style.display = 'block';
     consentBlock.style.display = 'flex';
+    if(forgotRow) forgotRow.style.display = 'none';
     updateConsentState();
   } else {
     title.textContent = 'Welcome back';
@@ -824,6 +876,7 @@ function syncAuthUI(){
     if(tabSignup) tabSignup.classList.remove('active');
     legalNameField.style.display = 'none';
     consentBlock.style.display = 'none';
+    if(forgotRow) forgotRow.style.display = 'block';
     submitBtn.disabled = false;
   }
 }
@@ -966,6 +1019,104 @@ function openLegalModal(key){
 function closeLegalModal(){
   document.getElementById('legal-modal-overlay').classList.remove('open');
 }
+
+/* ============ PASSWORD RESET ============ */
+function openForgotPassword(){
+  document.getElementById('forgot-password-form').style.display = 'block';
+  document.getElementById('forgot-password-sent').style.display = 'none';
+  const errEl = document.getElementById('forgot-password-error');
+  errEl.style.display = 'none';
+  const emailInput = document.getElementById('forgot-password-email');
+  // pre-fill with whatever's already in the main email field, saves retyping
+  const mainEmail = document.getElementById('auth-email');
+  if(mainEmail && mainEmail.value) emailInput.value = mainEmail.value;
+  document.getElementById('forgot-password-overlay').classList.add('open');
+}
+
+function closeForgotPassword(){
+  document.getElementById('forgot-password-overlay').classList.remove('open');
+}
+
+async function sendPasswordReset(){
+  const errEl = document.getElementById('forgot-password-error');
+  errEl.style.display = 'none';
+  const email = document.getElementById('forgot-password-email').value.trim();
+  if(!email){
+    errEl.style.display = 'block';
+    errEl.textContent = 'Enter your email first.';
+    return;
+  }
+  if(!supabaseClient){
+    errEl.style.display = 'block';
+    errEl.textContent = 'Setup needed: add your Supabase URL and key in the CONFIG section of the code.';
+    return;
+  }
+  const btn = document.getElementById('forgot-password-send-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  try{
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + window.location.pathname
+    });
+    if(error) throw error;
+    document.getElementById('forgot-password-form').style.display = 'none';
+    document.getElementById('forgot-password-sent').style.display = 'block';
+  }catch(e){
+    console.error('Password reset request error:', e);
+    errEl.style.display = 'block';
+    errEl.textContent = "Couldn't send the reset email just now. Double check the email address and try again.";
+    btn.disabled = false;
+    btn.textContent = 'Send reset link';
+  }
+}
+
+// Fires when someone clicks the link from the reset email and lands back
+// here with a recovery token in the URL. Supabase's client picks that up
+// automatically and emits this event, no manual URL parsing needed.
+if(supabaseClient){
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    if(event === 'PASSWORD_RECOVERY'){
+      document.getElementById('set-new-password-form').style.display = 'block';
+      document.getElementById('set-new-password-done').style.display = 'none';
+      document.getElementById('set-new-password-overlay').classList.add('open');
+    }
+  });
+}
+
+async function submitNewPassword(){
+  const errEl = document.getElementById('set-new-password-error');
+  errEl.style.display = 'none';
+  const newPassword = document.getElementById('new-password-input').value;
+  if(!newPassword || newPassword.length < 6){
+    errEl.style.display = 'block';
+    errEl.textContent = 'Password needs to be at least 6 characters.';
+    return;
+  }
+  const btn = document.getElementById('set-new-password-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  try{
+    const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+    if(error) throw error;
+    document.getElementById('set-new-password-form').style.display = 'none';
+    document.getElementById('set-new-password-done').style.display = 'block';
+    // sign out of the temporary recovery session so they log back in fresh with the new password
+    await supabaseClient.auth.signOut();
+  }catch(e){
+    console.error('Set new password error:', e);
+    errEl.style.display = 'block';
+    errEl.textContent = "Couldn't save that password just now. Try again in a moment.";
+    btn.disabled = false;
+    btn.textContent = 'Save new password';
+  }
+}
+
+function closeSetNewPasswordScreen(){
+  document.getElementById('set-new-password-overlay').classList.remove('open');
+  // clear the recovery token out of the URL so a refresh doesn't reopen this
+  window.history.replaceState({}, document.title, window.location.pathname);
+}
+
 
 function agreeFromModal(){
   const agreeBtn = document.getElementById('legal-modal-agree-btn');
