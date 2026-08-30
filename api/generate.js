@@ -13,6 +13,35 @@ export const config = {
   maxDuration: 180, // profile generation asks for a lot in one call (headlines, About, banner, featured, keywords/skills) and can take well over a minute; Vercel Pro supports up to 300s
 };
 
+// Profile generation fires 3 requests to Anthropic at once (headline, banner,
+// and the main text call). Under normal single-request load the API rarely
+// hits a transient rate limit or overload response, but three requests
+// landing at the same instant occasionally do. Retrying just those transient
+// failures automatically, rather than surfacing them straight to the client,
+// is what actually fixes the intermittent "Profile generation failed" issue.
+async function callAnthropicWithRetry(body, apiKey, attempt = 1){
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify(body)
+  });
+
+  // 429 = rate limited, 529 = Anthropic overloaded. Both are transient and
+  // worth a short retry. Anything else (bad request, auth failure, etc.)
+  // is a real error and should surface immediately, not retry pointlessly.
+  if ((response.status === 429 || response.status === 529) && attempt < 3) {
+    const delayMs = attempt * 1500; // 1.5s, then 3s
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+    return callAnthropicWithRetry(body, apiKey, attempt + 1);
+  }
+
+  return response;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
@@ -47,15 +76,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify(body)
-    });
+    const response = await callAnthropicWithRetry(body, apiKey);
 
     const data = await response.json();
 
