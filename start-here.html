@@ -2342,7 +2342,7 @@ const HEADLINE_TOOL = {
         items: {
           type: 'object',
           properties: {
-            text: { type: 'string', description: 'The full headline using pipe dividers ( | ) to separate components, structured as Role/value proposition | Who you help | Credibility marker or CTA, each segment under about 40 characters, no trailing period, never includes the client business or brand name, must be exactly 210-220 characters including spaces' },
+            text: { type: 'string', description: 'The full headline using pipe dividers ( | ) to separate components, structured as Role/value proposition | Who you help | A searchable specialty or skill keyword. That third segment must be something a person would actually type into LinkedIn search, like a role, specialty, or recognized professional certification (e.g. "Certified Executive Coach," "PMP"). It must never be an award, ranking, "Top X," or other accolade, those aren\'t search terms and don\'t belong in a headline. Each segment under about 40 characters, no trailing period, never includes the client business or brand name, must be exactly 210-220 characters including spaces' },
             characters: { type: 'integer', description: 'The exact character count of the text field above, including spaces' },
             why_it_works: { type: 'string', description: 'One sentence explaining the strategic choice' }
           },
@@ -2447,6 +2447,7 @@ ${notes ? `Helpful notes for this client (follow closely): ${notes}` : ''}`;
 
 ${PROFILE_VOICE_RULES}
 - Never use the words "help" or "helping" anywhere in this headline. Use stronger, more specific verbs instead (e.g. "guides," "builds," "leads," "grows," "positions," "coaches," or a verb specific to the client's actual work).
+- Awards, rankings, "Top X" lists, and other accolades never appear anywhere in the headline, even if the client listed them in their foundation info below. A headline's job is to be found in search; nobody searches LinkedIn for "award winner." Save any awards or recognition for the About section instead, where they belong.
 
 ${foundationBlock}
 
