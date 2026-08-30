@@ -2342,7 +2342,7 @@ const HEADLINE_TOOL = {
         items: {
           type: 'object',
           properties: {
-            text: { type: 'string', pattern: '^[^|]+\\|[^|]+\\|[^|]+$', description: 'The full headline using pipe dividers ( | ) to separate components. Exactly 3 segments, exactly 2 pipe characters total, never more, structured as Role/value proposition | Who you help | A searchable specialty or skill keyword. That third segment must be something a person would actually type into LinkedIn search, like a role, specialty, or recognized professional certification (e.g. "Certified Executive Coach," "PMP"). It must never be an award, ranking, "Top X," media appearance, or other accolade, those aren\'t search terms and don\'t belong in a headline, and they don\'t get their own segment even if the client has several. Each segment under about 40 characters, no trailing period, never includes the client business or brand name, must be exactly 210-220 characters including spaces' },
+            text: { type: 'string', pattern: '^[^|]+\\|[^|]+\\|[^|]+$', minLength: 212, maxLength: 220, description: 'The full headline using pipe dividers ( | ) to separate components. Exactly 3 segments, exactly 2 pipe characters total, never more, structured as Role/value proposition | Who you help | A searchable specialty or skill keyword. That third segment must be something a person would actually type into LinkedIn search, like a role, specialty, or recognized professional certification (e.g. "Certified Executive Coach," "PMP"). It must never be an award, ranking, "Top X," media appearance, or other accolade, those aren\'t search terms and don\'t belong in a headline, and they don\'t get their own segment even if the client has several. Each segment under about 40 characters, no trailing period, never includes the client business or brand name. MUST be 212-220 characters including spaces, count the characters before submitting, and if the draft lands short, expand a segment with more specific, real detail (a more precise audience description, a more specific outcome) rather than padding with filler words, LinkedIn gives real estate here and it should be used, not left on the table' },
             characters: { type: 'integer', description: 'The exact character count of the text field above, including spaces' },
             why_it_works: { type: 'string', description: 'One sentence explaining the strategic choice' }
           },
@@ -2434,7 +2434,7 @@ async function generateProfile(isRegenerate){
   const btn = document.getElementById('profile-gen-btn');
   const box = document.getElementById('profile-output');
   btn.disabled = true;
-  box.innerHTML = generatingHtml();
+  box.innerHTML = generatingHtml("Drafting your full profile strategy. This one's thorough, headline, banner, About, Experience, Featured, Skills, and Influencers, so it typically takes a minute or two...");
   const notes = document.getElementById('dee-notes-profile').value;
   state.deeNotes.profile = notes;
 
