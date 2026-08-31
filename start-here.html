@@ -152,7 +152,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
 .info-tip-wrap{position:relative;display:inline-block;margin-left:6px;vertical-align:middle}
 .info-tip-btn{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--ink-soft);background:none;color:var(--ink-soft);font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;line-height:1;cursor:pointer;padding:0;display:inline-flex;align-items:center;justify-content:center}
 .info-tip-btn:hover{border-color:var(--gold-deep);color:var(--gold-deep)}
-.info-tip-bubble{display:none;position:absolute;z-index:50;bottom:calc(100% + 8px);left:0;width:230px;background:var(--ink);color:var(--text-on-dark);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;text-transform:none;letter-spacing:normal;line-height:1.5;padding:10px 12px;border-radius:8px;box-shadow:var(--shadow-md)}
+.info-tip-bubble{display:none;position:absolute;z-index:50;bottom:calc(100% + 8px);left:0;width:230px;background:var(--ink);color:#F6F3E7;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;text-transform:none;letter-spacing:normal;line-height:1.5;padding:10px 12px;border-radius:8px;box-shadow:var(--shadow-md)}
 .info-tip-bubble.open{display:block}
 .info-tip-bubble::after{content:'';position:absolute;top:100%;left:10px;border:6px solid transparent;border-top-color:var(--ink)}
 @media(max-width:480px){.info-tip-bubble{width:190px}}
@@ -483,7 +483,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
     <div style="display:flex;align-items:center;gap:10px">
       <span id="save-indicator" style="font-size:11px;color:rgba(20,18,15,0.4)"></span>
       <button class="logout-btn" id="download-btn" onclick="downloadDoc()" style="background:var(--gold);color:var(--plum);border-color:var(--gold);font-weight:600"><span class="btn-label-full">Download Word Doc</span><span class="btn-label-short" style="display:none">Download</span></button>
-      <button class="logout-btn" onclick="goTo('storybank')">The Notebook</button>${infoTooltip("A running place to capture client stories and wins as they happen. Posts can pull from these later.")}
+      <button class="logout-btn" onclick="goTo('storybank')">The Notebook</button><span id="notebook-tip-slot"></span>
       <button class="logout-btn" onclick="confirmStartOver()">Start Over</button>
       <button class="logout-btn" onclick="doLogout()">Log out</button>
     </div>
@@ -913,6 +913,15 @@ function toggleAuthMode(){
     // localStorage unavailable (private browsing, etc.) - just default to login
   }
   syncAuthUI();
+})();
+
+// The header is static page HTML, not rebuilt by render() the way each step's
+// content is, so a ${infoTooltip(...)} call typed directly into that markup
+// never evaluates, the browser just prints it as literal text. This fills
+// the placeholder slot in after the page loads instead.
+(function initNotebookTooltip(){
+  const slot = document.getElementById('notebook-tip-slot');
+  if(slot) slot.innerHTML = infoTooltip("A running place to capture client stories and wins as they happen. Posts can pull from these later.");
 })();
 
 /* ============ LEGAL DOCUMENTS ============ */
