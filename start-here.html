@@ -149,6 +149,18 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
 
 .field{margin-bottom:18px}
 .field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--gold-deep);margin-bottom:7px}
+.info-tip-wrap{position:relative;display:inline-block;margin-left:6px;vertical-align:middle}
+.info-tip-btn{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--ink-soft);background:none;color:var(--ink-soft);font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;line-height:1;cursor:pointer;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.info-tip-btn:hover{border-color:var(--gold-deep);color:var(--gold-deep)}
+.info-tip-bubble{display:none;position:absolute;z-index:50;bottom:calc(100% + 8px);left:0;width:230px;background:var(--ink);color:var(--text-on-dark);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;text-transform:none;letter-spacing:normal;line-height:1.5;padding:10px 12px;border-radius:8px;box-shadow:var(--shadow-md)}
+.info-tip-bubble.open{display:block}
+.info-tip-bubble::after{content:'';position:absolute;top:100%;left:10px;border:6px solid transparent;border-top-color:var(--ink)}
+@media(max-width:480px){.info-tip-bubble{width:190px}}
+.checkin-banner{background:var(--gold-pale);border:1px solid rgba(245,183,0,0.3);border-radius:var(--radius);padding:14px 16px;margin-top:16px}
+#checkin-prompt-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--ink);font-weight:600}
+.checkin-link-btn{background:none;border:none;color:var(--gold-deep);font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline;padding:0}
+#checkin-box textarea{width:100%;border:1.5px solid var(--border-mid);border-radius:var(--radius);padding:10px 12px;font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--ink);background:var(--white);min-height:70px;resize:vertical;outline:none}
+#checkin-box textarea:focus{border-color:var(--gold)}
 .field-recommended{font-family:'Space Grotesk',sans-serif;text-transform:none;letter-spacing:normal;font-size:10.5px;font-weight:600;color:var(--ink-soft);background:var(--line);border-radius:8px;padding:1px 8px;margin-left:6px;vertical-align:middle}
 .field input,.field textarea{width:100%;border:1.5px solid var(--border-mid);border-radius:var(--radius);padding:11px 14px;font-family:'Space Grotesk',sans-serif;font-size:13.5px;color:var(--ink);background:var(--white);outline:none;transition:border-color .18s ease, box-shadow .18s ease;resize:vertical}
 .field input:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(245,183,0,0.14)}
@@ -471,7 +483,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
     <div style="display:flex;align-items:center;gap:10px">
       <span id="save-indicator" style="font-size:11px;color:rgba(20,18,15,0.4)"></span>
       <button class="logout-btn" id="download-btn" onclick="downloadDoc()" style="background:var(--gold);color:var(--plum);border-color:var(--gold);font-weight:600"><span class="btn-label-full">Download Word Doc</span><span class="btn-label-short" style="display:none">Download</span></button>
-      <button class="logout-btn" onclick="goTo('storybank')">The Notebook</button>
+      <button class="logout-btn" onclick="goTo('storybank')">The Notebook</button>${infoTooltip("A running place to capture client stories and wins as they happen. Posts can pull from these later.")}
       <button class="logout-btn" onclick="confirmStartOver()">Start Over</button>
       <button class="logout-btn" onclick="doLogout()">Log out</button>
     </div>
@@ -505,6 +517,7 @@ const supabaseClient = (typeof supabase !== 'undefined' && SUPABASE_URL.startsWi
   : null;
 
 let currentUser = null;
+let showCheckinPrompt = false; // set true only by an actual first-ever Profile generation completing, never by page load, so existing members who already generated their profile before this feature existed can never trigger it retroactively
 let voiceProfile = null; // { voice_profile, voice_profile_source, voice_profile_updated_at, voice_profile_history } or null
 let voiceUIMode = 'summary'; // 'summary' | 'choose' | 'samples' | 'questionnaire'
 let authMode = 'login'; // 'login' or 'signup' - actual first-visit default is set by initAuthModeForVisitor() below
@@ -776,7 +789,7 @@ function renderVoiceModule(){
     const updated = voiceProfile.voice_profile_updated_at ? new Date(voiceProfile.voice_profile_updated_at).toLocaleDateString() : '';
     return `
       <div class="card" style="padding:18px 20px;margin-bottom:22px">
-        <div class="dee-notes-label" style="margin-bottom:8px">🎙️ Your Voice</div>
+        <div class="dee-notes-label" style="margin-bottom:8px">🎙️ Your Voice${infoTooltip("Different from Brand Voice on page 1. This learns your actual writing style from samples or a few questions, not just a tone category.")}</div>
         <p style="font-size:13px;color:var(--ink);line-height:1.6;margin-bottom:8px">${v.notes}</p>
         <p style="font-size:11px;color:var(--ink-pale);margin-bottom:12px">${sourceLabel}${updated ? ` · Updated ${updated}` : ''}</p>
         <button class="btn btn-secondary" style="padding:8px 16px;font-size:12px" onclick="voiceUIMode='choose';render()">Update My Voice</button>
@@ -787,7 +800,7 @@ function renderVoiceModule(){
   if(voiceUIMode === 'choose'){
     return `
       <div class="card" style="padding:18px 20px;margin-bottom:22px">
-        <div class="dee-notes-label" style="margin-bottom:6px">🎙️ Your Voice</div>
+        <div class="dee-notes-label" style="margin-bottom:6px">🎙️ Your Voice${infoTooltip("Different from Brand Voice on page 1. This learns your actual writing style from samples or a few questions, not just a tone category.")}</div>
         <p class="field-hint" style="margin-bottom:14px">Match generated content to how you actually write. Takes two minutes, makes everything sound more like you.</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn btn-gold" style="padding:9px 16px;font-size:12.5px" onclick="voiceUIMode='samples';render()">I have writing samples</button>
@@ -1557,6 +1570,92 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
+/* ============ INFO TOOLTIPS ============
+   A small "?" icon that reveals one short, contextual explanation right
+   where the confusion actually happens, cheaper to build and update than
+   video, and doesn't pull anyone out of the flow to go watch something. */
+function infoTooltip(text){
+  const id = 'tip-' + Math.random().toString(36).slice(2,9);
+  return `<span class="info-tip-wrap"><button type="button" class="info-tip-btn" onclick="toggleTooltip('${id}', event)" aria-label="More info">?</button><span class="info-tip-bubble" id="${id}">${escapeHtml(text)}</span></span>`;
+}
+
+function toggleTooltip(id, event){
+  if(event) event.stopPropagation();
+  const bubble = document.getElementById(id);
+  const wasOpen = bubble.classList.contains('open');
+  document.querySelectorAll('.info-tip-bubble.open').forEach(el => el.classList.remove('open'));
+  if(!wasOpen) bubble.classList.add('open');
+}
+document.addEventListener('click', () => {
+  document.querySelectorAll('.info-tip-bubble.open').forEach(el => el.classList.remove('open'));
+});
+
+/* ============ FIRST-GENERATION CHECK-IN ============
+   A single lightweight prompt shown once, right after someone's first-ever
+   Profile generation, while the experience is fresh. Not a survey, just a
+   reply box. showCheckinPrompt is a transient in-memory flag, never
+   persisted, so it can only ever be set by a genuine first-generation event
+   in this session, and never resurfaces on a later login. */
+function renderCheckinPrompt(){
+  if(!showCheckinPrompt) return '';
+  return `
+    <div class="checkin-banner" id="checkin-banner">
+      <div id="checkin-prompt-row">
+        <span>How did that feel?</span>
+        <button type="button" class="checkin-link-btn" onclick="openCheckinBox()">Reply</button>
+        <button type="button" class="checkin-link-btn" onclick="dismissCheckin()">Skip</button>
+      </div>
+      <div id="checkin-box" style="display:none">
+        <textarea id="checkin-text" placeholder="Anything confusing, or that didn't work the way you expected?"></textarea>
+        <div class="btn-row" style="margin-top:8px">
+          <button type="button" class="btn btn-gold" style="padding:8px 16px;font-size:12.5px" onclick="submitCheckin()">Send</button>
+          <button type="button" class="btn btn-secondary" style="padding:8px 16px;font-size:12.5px" onclick="dismissCheckin()">Never mind</button>
+        </div>
+        <div id="checkin-status" style="font-size:11.5px;color:var(--ink-soft);margin-top:6px"></div>
+      </div>
+    </div>
+  `;
+}
+
+function openCheckinBox(){
+  document.getElementById('checkin-prompt-row').style.display = 'none';
+  document.getElementById('checkin-box').style.display = 'block';
+}
+
+function dismissCheckin(){
+  showCheckinPrompt = false;
+  const el = document.getElementById('checkin-banner');
+  if(el) el.remove();
+}
+
+async function submitCheckin(){
+  const text = document.getElementById('checkin-text').value.trim();
+  const statusEl = document.getElementById('checkin-status');
+  if(!text){
+    statusEl.textContent = 'Type something first, or hit Never mind.';
+    return;
+  }
+  statusEl.textContent = 'Sending...';
+  try{
+    await fetch('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: currentUser ? currentUser.email : 'unknown',
+        message: text,
+        context: 'First profile generation check-in'
+      })
+    });
+    statusEl.textContent = 'Sent, thank you.';
+    setTimeout(dismissCheckin, 1400);
+  }catch(e){
+    console.error('Check-in feedback send error:', e);
+    statusEl.textContent = "Couldn't send that just now, try again in a moment.";
+  }
+}
+
+
+
 /* ============ SMART NUDGE ============
    A rule-based reminder, not an AI chatbot: checks how stale a few key
    things are (pillars, posts, outreach) and surfaces at most one, with a
@@ -2228,7 +2327,7 @@ function renderFoundation(){
     </div>
 
     <div class="field">
-      <label>Outcomes you want on LinkedIn</label>
+      <label>Outcomes you want on LinkedIn${infoTooltip("This shapes your CTAs and outreach strategy throughout the platform, not just this page. Be specific if you can.")}</label>
       <div class="field-hint" style="margin-top:0;margin-bottom:10px">List 3 to 5 outcomes you want, not just goals. What should LinkedIn actually produce for your business? For example: increase inbound leads by 20%, or have your content show up when people search on LinkedIn and in AI tools.</div>
       <div id="outcomes-block">${renderOutcomesBlock()}</div>
     </div>
@@ -2321,6 +2420,7 @@ function renderProfile(){
     </div>
     <div class="output-box" id="profile-output">${hasOutput ? formatOutput(state.outputs.profile) : placeholderBox('Your full 6-module LinkedIn Profile Strategy will appear here.')}</div>
     ${hasOutput ? outputDisclaimerHtml('full') : ''}
+    ${renderCheckinPrompt()}
   `;
 }
 
@@ -2512,6 +2612,7 @@ Use - for list items within a module. No preamble, no closing remarks, no markdo
     ].join('\n\n');
     state.outputs.profile = fullProfile;
     state.completed.profile = true;
+    if(!isRegenerate) showCheckinPrompt = true;
     saveState();
     render();
   }catch(e){
