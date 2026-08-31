@@ -1,5 +1,5 @@
 // /api/weekly-nudge.js
-// Linkspiration: weekly content-idea email
+// Unsilenced: weekly content-idea email
 //
 // Triggered by Vercel Cron (see vercel.json). Runs once a week, pulls each
 // approved member's 4 Content Pillars, picks one, and emails a content idea
@@ -46,7 +46,10 @@ function buildEmailHtml({ firstName, pillar, appUrl }) {
         </a>
       </p>
       <p style="font-size: 12px; color: #888;">
-        Linkspiration, one idea a week to keep you visible.
+        Unsilenced, one idea a week to keep you visible.
+      </p>
+      <p style="font-size: 12px; color: #888; margin-top: 10px;">
+        Anything confusing this week? Just reply to this email, I read every one.
       </p>
     </div>
   `;
@@ -116,7 +119,7 @@ export default async function handler(req, res) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          from: "Linkspiration <hello@linkspiration.com>",
+          from: "Unsilenced <hello@linkspiration.com>",
           to: profile.email,
           subject: `This week's content idea: ${pillar.name}`,
           html
