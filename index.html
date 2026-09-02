@@ -228,6 +228,66 @@
     .invert-h2 { font-size: 28px; }
   }
   a:focus-visible, .btn-invert:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+  /* ChatGPT comparison */
+  .versus { padding: 88px 0; border-top: 1px solid var(--line); }
+  .versus .wrap { max-width: 780px; }
+  .versus-eyebrow { color: var(--navy); margin-bottom: 20px; }
+  .versus h2 { font-size: clamp(24px, 3.2vw, 32px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 40px; max-width: 600px; }
+  .versus-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .versus-col h3 { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; margin-bottom: 18px; }
+  .versus-col.diy h3 { color: var(--ink-soft); }
+  .versus-col.us h3 { color: var(--gold-deep); font-weight: 700; font-size: 13px; margin-top: 6px; padding-top: 14px; }
+  .versus-col ul { list-style: none; }
+  .versus-col li { font-size: 14.5px; line-height: 1.6; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .versus-col.diy li { color: var(--ink-soft); }
+  .versus-col.us li { color: var(--ink); font-weight: 500; }
+  @media (max-width: 640px) { .versus-grid { grid-template-columns: 1fr; gap: 8px; } }
+
+  /* Pricing */
+  .pricing { background: var(--navy); padding: 88px 0; }
+  .pricing .wrap { max-width: 720px; }
+  .pricing-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 22px; }
+  .pricing h2 { font-size: clamp(26px, 3.4vw, 36px); font-weight: 700; color: var(--white); letter-spacing: -0.01em; margin-bottom: 14px; max-width: 560px; line-height: 1.2; }
+  .pricing-sub { color: rgba(255,255,255,0.78); font-size: 15.5px; font-weight: 500; margin-bottom: 32px; max-width: 520px; line-height: 1.6; }
+  .billing-toggle { display: inline-flex; background: rgba(255,255,255,0.1); border-radius: 999px; padding: 4px; margin-bottom: 24px; }
+  .billing-toggle button { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; padding: 9px 20px; border-radius: 999px; border: none; background: none; color: rgba(255,255,255,0.7); cursor: pointer; }
+  .billing-toggle button.active { background: var(--gold); color: var(--ink); }
+  .billing-toggle .save-tag { font-size: 11px; font-weight: 700; color: var(--gold); margin-left: 6px; }
+  .price-card { background: var(--white); border-radius: 14px; padding: 40px 44px; max-width: 480px; }
+  .price-amount { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+  .price-amount span { font-size: 16px; font-weight: 500; color: var(--ink-soft); }
+  .price-annual-note { display: none; font-size: 13px; color: var(--ink-soft); margin-top: 4px; font-weight: 500; }
+  .price-list { list-style: none; margin: 28px 0 32px; }
+  .price-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14.5px; font-weight: 500; color: var(--ink); padding: 9px 0; border-bottom: 1px solid var(--line); line-height: 1.5; }
+  .price-list li:last-child { border-bottom: none; }
+  .price-list li::before { content: '✓'; color: var(--gold-deep); font-weight: 700; flex-shrink: 0; }
+  .btn-price { display: block; width: 100%; text-align: center; background: var(--gold); color: var(--ink); border: none; padding: 16px 0; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none; border-radius: 8px; }
+  .price-note { font-size: 12.5px; color: var(--ink-soft); text-align: center; margin-top: 14px; }
+  .price-access-note { font-size: 12.5px; color: var(--ink); text-align: center; margin-top: 8px; font-weight: 600; }
+  .price-signin-note { text-align: center; margin-top: 20px; font-size: 13px; }
+  .price-signin-note a { color: var(--gold); font-weight: 700; text-decoration: underline; }
+
+  /* FAQ */
+  .faq { padding: 88px 0; border-top: 1px solid var(--line); }
+  .faq .wrap { max-width: 680px; }
+  .faq-eyebrow { color: var(--navy); margin-bottom: 24px; }
+  .faq h2 { font-size: clamp(24px, 3.2vw, 30px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 32px; }
+  .faq-item { border-bottom: 1px solid var(--line); }
+  .faq-item:first-of-type { border-top: 1px solid var(--line); }
+  .faq-q { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 16px; background: none; border: none; text-align: left; padding: 22px 0; font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; color: var(--ink); cursor: pointer; }
+  .faq-q .icon { font-size: 20px; color: var(--gold-deep); flex-shrink: 0; transition: transform 0.2s ease; }
+  .faq-item.open .faq-q .icon { transform: rotate(45deg); }
+  .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
+  .faq-item.open .faq-a { max-height: 240px; }
+  .faq-a p { font-size: 14.5px; line-height: 1.65; color: var(--ink-soft); padding-bottom: 22px; max-width: 580px; }
+  .faq-cta { text-align: center; margin-top: 48px; }
+  .btn-faq-cta { display: inline-block; background: var(--gold); color: var(--ink); border: none; padding: 16px 34px; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none; border-radius: 8px; }
+  .faq-cta p { font-size: 12.5px; color: var(--ink-soft); margin-top: 12px; }
+
+  @media (max-width: 720px) {
+    .price-card { padding: 32px 26px; }
+  }
 </style>
 </head>
 <body>
@@ -269,7 +329,7 @@
         <p class="quote-mark">"Without this, you're doing the work and nobody knows it."</p>
         <div class="stat-block">
           <div class="stat-number">20</div>
-          <div class="stat-label">members building their presence in the LAB right now</div>
+          <div class="stat-label">members already building their presence in the LAB</div>
         </div>
       </div>
     </div>
@@ -362,7 +422,119 @@
         <div class="scope-item"><span class="label">Offline conversion</span></div>
       </div>
       <p class="reframe-line">This is how real conversations turn into real business. It's not a content tool. It's a full visibility system.</p>
-      <a href="https://linkspiration.com/start-here.html" class="btn-invert">See how it works</a>
+      <a href="#pricing" class="btn-invert">See pricing</a>
+    </div>
+  </section>
+
+  <section class="versus">
+    <div class="wrap">
+      <div class="versus-eyebrow mono">The honest comparison</div>
+      <h2>What happens when you just open ChatGPT and start typing</h2>
+      <div class="versus-grid">
+        <div class="versus-col diy">
+          <h3>DIY with a chatbot</h3>
+          <ul>
+            <li>Starts from zero every session, no memory of your business or your voice</li>
+            <li>Generic output, the same prompts produce the same kind of answer for anyone</li>
+            <li>No strategy behind it, just whatever you happen to ask for that day</li>
+            <li>You're the one deciding what's worth posting and who to reach out to</li>
+            <li>No system for turning a good conversation into an actual client</li>
+          </ul>
+        </div>
+        <div class="versus-col us">
+          <h3>With Unsilenced</h3>
+          <ul>
+            <li>Learns your actual voice once, from samples or a few questions, and keeps using it</li>
+            <li>Built from your real offers, audience, and goals, not a generic prompt</li>
+            <li>A methodology behind every piece, profile, content, audience, and outreach working together</li>
+            <li>Content pillars and an audience plan built for you, not guessed at each time</li>
+            <li>A clear path from DM to discovery call, not just more posts</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing" id="pricing">
+    <div class="wrap">
+      <div class="pricing-eyebrow">Founding member pricing</div>
+      <h2>Lock in founding pricing, before it goes up</h2>
+      <p class="pricing-sub">Open to the first 20 people who join, locked in for as long as your account stays active.</p>
+
+      <div class="billing-toggle" role="tablist">
+        <button type="button" class="active" id="toggle-monthly" onclick="setBilling('monthly')">Monthly</button>
+        <button type="button" id="toggle-annual" onclick="setBilling('annual')">Annual <span class="save-tag">Save 2 months</span></button>
+      </div>
+
+      <div class="price-card">
+        <div class="price-amount" id="price-amount">$67<span>/month</span></div>
+        <div class="price-annual-note" id="price-annual-note">Billed as $670 once a year</div>
+        <ul class="price-list">
+          <li>Full LinkedIn Profile Strategy, headline, About, banner, Featured, Skills, and Influencers</li>
+          <li>Weekly First Posts, built from your own content pillars</li>
+          <li>A complete Audience &amp; Outreach plan, with real scripts</li>
+          <li>A Taking It Offline plan for turning conversations into clients</li>
+          <li>Voice Matching, so everything sounds like you, not a template</li>
+          <li>The Notebook, to capture stories and wins as they happen</li>
+        </ul>
+        <a href="https://buy.stripe.com/bJefZi3Dg0yxgia3TRdfG0O" class="btn-price" id="price-cta">Lock in $67/month</a>
+        <p class="price-access-note">You'll get access within 24 hours of payment.</p>
+        <p class="price-note">Price returns to standard once the first 20 spots are filled.</p>
+        <p class="price-signin-note">Already have an account? <a href="https://linkspiration.com/start-here.html">Sign in instead</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq">
+    <div class="wrap">
+      <div class="faq-eyebrow mono">Before you ask</div>
+      <h2>A few honest answers</h2>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          Will this actually sound like me, not like AI?
+          <span class="icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>That's the whole point of Voice Matching. You give it a few writing samples or answer a short set of questions, and everything it generates after that is built from how you actually talk, not a generic AI tone. You always read it and edit before it goes anywhere, so it never goes out sounding like a template.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          How is this different from just using ChatGPT myself?
+          <span class="icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>A chatbot starts from zero every time you open it. It doesn't know your business, your audience, or what you posted last week, and it has no strategy behind what it suggests. Unsilenced is built around one methodology across your whole LinkedIn presence, profile, content, audience, and outreach working together, not a fresh guess every session.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          Is this just software, or is there a real strategy behind it?
+          <span class="icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>It's not a tool you're left to figure out alone. Unsilenced is built directly from a real, proven LinkedIn visibility methodology, developed through years of 1-on-1 coaching, not assembled from generic AI prompts. Every module you use is that strategy, made usable in minutes instead of a coaching session.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          When do I get access after I pay?
+          <span class="icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>Within 24 hours. Every new account is confirmed by hand to keep things running smoothly, so you'll have your login and be ready to start well within a day of signing up.</p>
+        </div>
+      </div>
+
+      <div class="faq-cta">
+        <a href="#pricing" class="btn-faq-cta">Lock in founding pricing</a>
+        <p>First 20 spots, then the price goes up.</p>
+      </div>
+
     </div>
   </section>
 
@@ -455,6 +627,33 @@
     compareTags.forEach(function (el) { observer.observe(el); });
   }
 })();
+
+var STRIPE_MONTHLY = 'https://buy.stripe.com/bJefZi3Dg0yxgia3TRdfG0O';
+var STRIPE_ANNUAL = 'https://buy.stripe.com/eVqfZi7Tw2GF2rkeyvdfG0P';
+
+function setBilling(plan) {
+  var monthlyBtn = document.getElementById('toggle-monthly');
+  var annualBtn = document.getElementById('toggle-annual');
+  var amountEl = document.getElementById('price-amount');
+  var annualNoteEl = document.getElementById('price-annual-note');
+  var ctaEl = document.getElementById('price-cta');
+
+  if (plan === 'annual') {
+    monthlyBtn.classList.remove('active');
+    annualBtn.classList.add('active');
+    amountEl.innerHTML = '$56<span>/month</span>';
+    annualNoteEl.style.display = 'block';
+    ctaEl.textContent = 'Lock in $670/year';
+    ctaEl.href = STRIPE_ANNUAL;
+  } else {
+    monthlyBtn.classList.add('active');
+    annualBtn.classList.remove('active');
+    amountEl.innerHTML = '$67<span>/month</span>';
+    annualNoteEl.style.display = 'none';
+    ctaEl.textContent = 'Lock in $67/month';
+    ctaEl.href = STRIPE_MONTHLY;
+  }
+}
 </script>
 </body>
 </html>
