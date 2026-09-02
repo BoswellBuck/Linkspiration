@@ -134,6 +134,26 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:700}
 @media(min-width:1650px){ .content{max-width:1300px} }
 .step-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--gold-deep);margin-bottom:8px}
 .nudge-banner{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--gold);border-radius:var(--radius);padding:14px 16px 14px 20px;margin-bottom:22px}
+.tracker-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px 24px;margin-bottom:22px}
+.tracker-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:4px}
+.tracker-sub{font-size:12px;color:var(--ink-soft);margin-bottom:18px}
+.tracker-setup{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:6px}
+.tracker-setup-field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:5px}
+.tracker-setup-field input{width:100%;border:1.5px solid var(--border-mid);border-radius:8px;padding:9px 10px;font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--ink);background:var(--white);outline:none}
+.tracker-setup-field input:focus{border-color:var(--gold)}
+.tracker-rows{display:flex;flex-direction:column;gap:14px}
+.tracker-row{display:flex;align-items:center;gap:14px}
+.tracker-row-label{flex:1;min-width:0}
+.tracker-row-name{font-size:13px;font-weight:700;color:var(--ink)}
+.tracker-row-count{font-size:12px;color:var(--ink-soft);margin-top:2px}
+.tracker-bar-track{height:6px;background:var(--line);border-radius:3px;margin-top:6px;overflow:hidden}
+.tracker-bar-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .2s ease}
+.tracker-bar-fill.met{background:var(--signal)}
+.tracker-btn{width:34px;height:34px;border-radius:50%;border:none;background:var(--gold);color:var(--ink);font-size:17px;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.tracker-btn:hover{background:var(--gold-light,var(--gold))}
+.tracker-btn.minus{background:var(--line);color:var(--ink-soft);font-size:20px}
+.tracker-reset{font-size:11px;color:var(--ink-soft);text-decoration:underline;cursor:pointer;background:none;border:none;padding:0;margin-top:14px}
+@media(max-width:480px){.tracker-setup{grid-template-columns:1fr}}
 .nudge-banner-text{font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.5}
 .nudge-banner-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .nudge-btn{font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:700;color:var(--gold);background:var(--ink);border:none;border-radius:20px;padding:8px 16px;cursor:pointer;white-space:nowrap}
@@ -544,7 +564,9 @@ let state = {
   storyBank: [],
   contentGeneratedAt: null,
   audienceGeneratedAt: null,
-  dismissedNudges: {}
+  dismissedNudges: {},
+  outreachTargets: { connections: null, comments: null, followups: null },
+  outreachLog: []
 };
 
 /* ============ PERSISTENCE ============ */
@@ -1303,7 +1325,9 @@ async function startOver(){
     storyBank: [],
     contentGeneratedAt: null,
     audienceGeneratedAt: null,
-    dismissedNudges: {}
+    dismissedNudges: {},
+    outreachTargets: { connections: null, comments: null, followups: null },
+    outreachLog: []
   };
   saveState();
   render();
@@ -1737,6 +1761,131 @@ function dismissNudge(key){
   saveState();
   const el = document.getElementById('nudge-banner');
   if(el) el.remove();
+}
+
+/* ============ OUTREACH TRACKER ============
+   A lightweight log against the weekly targets already named in the
+   generated Audience & Outreach plan. Targets are typed in once by the
+   client reading their own plan, not auto-parsed from AI-generated text,
+   parsing that reliably has been a recurring problem elsewhere in this
+   app, and a wrong number here would be worse than no number at all. */
+const OUTREACH_TYPES = [
+  { key: 'connections', label: 'Connection requests' },
+  { key: 'comments', label: 'Comments on others\' posts' },
+  { key: 'followups', label: 'Follow-up messages' }
+];
+
+function getWeekStartISO(){
+  const now = new Date();
+  const day = now.getDay(); // 0=Sun..6=Sat
+  const diffToMonday = (day === 0 ? -6 : 1) - day;
+  const monday = new Date(now);
+  monday.setDate(now.getDate() + diffToMonday);
+  monday.setHours(0,0,0,0);
+  return monday.toISOString().slice(0,10);
+}
+
+function getWeekCount(type){
+  const weekStart = getWeekStartISO();
+  if(!state.outreachLog) return 0;
+  return state.outreachLog.filter(e => e.type === type && e.date >= weekStart).length;
+}
+
+function logOutreach(type){
+  if(!state.outreachLog) state.outreachLog = [];
+  state.outreachLog.push({ date: new Date().toISOString().slice(0,10), type: type });
+  saveState();
+  updateTrackerRow(type);
+}
+
+function undoOutreach(type){
+  if(!state.outreachLog || !state.outreachLog.length) return;
+  const today = new Date().toISOString().slice(0,10);
+  for(let i = state.outreachLog.length - 1; i >= 0; i--){
+    if(state.outreachLog[i].type === type && state.outreachLog[i].date === today){
+      state.outreachLog.splice(i, 1);
+      break;
+    }
+  }
+  saveState();
+  updateTrackerRow(type);
+}
+
+function updateTrackerRow(type){
+  const countEl = document.getElementById('tracker-count-' + type);
+  const barEl = document.getElementById('tracker-bar-' + type);
+  if(!countEl || !barEl) return;
+  const target = state.outreachTargets ? state.outreachTargets[type] : null;
+  const count = getWeekCount(type);
+  countEl.textContent = target ? `${count} / ${target} this week` : `${count} logged this week`;
+  if(target){
+    const pct = Math.min(100, Math.round((count / target) * 100));
+    barEl.style.width = pct + '%';
+    barEl.classList.toggle('met', count >= target);
+  }
+}
+
+function saveOutreachTargets(){
+  if(!state.outreachTargets) state.outreachTargets = {};
+  OUTREACH_TYPES.forEach(t => {
+    const input = document.getElementById('tracker-target-' + t.key);
+    const val = input ? parseInt(input.value, 10) : NaN;
+    state.outreachTargets[t.key] = isNaN(val) || val <= 0 ? null : val;
+  });
+  saveState();
+  render();
+}
+
+function resetOutreachLog(){
+  if(!window.confirm('Clear all logged outreach activity? This can\'t be undone.')) return;
+  state.outreachLog = [];
+  saveState();
+  render();
+}
+
+function renderOutreachTracker(){
+  const targets = state.outreachTargets || {};
+  const hasAnyTarget = OUTREACH_TYPES.some(t => targets[t.key]);
+
+  const setupHtml = `
+    <div class="tracker-setup">
+      ${OUTREACH_TYPES.map(t => `
+        <div class="tracker-setup-field">
+          <label>${t.label} / week</label>
+          <input type="number" min="0" id="tracker-target-${t.key}" value="${targets[t.key] || ''}" placeholder="e.g. 10" onchange="saveOutreachTargets()">
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  const rowsHtml = OUTREACH_TYPES.map(t => {
+    const target = targets[t.key];
+    const count = getWeekCount(t.key);
+    const pct = target ? Math.min(100, Math.round((count / target) * 100)) : 0;
+    const metClass = target && count >= target ? ' met' : '';
+    const countText = target ? `${count} / ${target} this week` : `${count} logged this week`;
+    return `
+      <div class="tracker-row">
+        <button type="button" class="tracker-btn minus" onclick="undoOutreach('${t.key}')" aria-label="Remove one">&minus;</button>
+        <div class="tracker-row-label">
+          <div class="tracker-row-name">${t.label}</div>
+          <div class="tracker-row-count" id="tracker-count-${t.key}">${countText}</div>
+          ${target ? `<div class="tracker-bar-track"><div class="tracker-bar-fill${metClass}" id="tracker-bar-${t.key}" style="width:${pct}%"></div></div>` : ''}
+        </div>
+        <button type="button" class="tracker-btn" onclick="logOutreach('${t.key}')" aria-label="Log one">+</button>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="tracker-card">
+      <div class="tracker-title">This week's outreach</div>
+      <div class="tracker-sub">${hasAnyTarget ? 'Tap + each time you send one, right after you do it, it only takes a second.' : 'Set your weekly targets from the plan below, then log activity as you go.'}</div>
+      ${setupHtml}
+      <div class="tracker-rows">${rowsHtml}</div>
+      ${state.outreachLog && state.outreachLog.length ? `<button type="button" class="tracker-reset" onclick="resetOutreachLog()">Clear all logged activity</button>` : ''}
+    </div>
+  `;
 }
 
 
@@ -2850,6 +2999,7 @@ No preamble, no closing remarks, no markdown bold asterisks.${voiceProfileInject
 function renderAudience(){
   return `
     <p class="step-desc">A readiness check on whether it's actually time to start, then who to target on LinkedIn and exactly how to reach out, ready to paste into connection requests and follow-ups.</p>
+    ${renderOutreachTracker()}
     ${deeNotesBlock('audience','e.g. focus on wedding planners and event coordinators, avoid cold pitching')}
     <div class="btn-row">
       <button class="btn btn-gold" id="audience-gen-btn" onclick="generateAudience()">Generate audience & outreach plan</button>
