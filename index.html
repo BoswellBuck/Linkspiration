@@ -183,7 +183,9 @@
 
   /* Who's behind it */
   .about { padding: 32px 0 88px; border-top: 1px solid var(--line); }
-  .about .wrap { max-width: 680px; }
+  .about .wrap { max-width: 960px; }
+  .about-grid { display: grid; grid-template-columns: 1.3fr 0.9fr; gap: 48px; align-items: center; }
+  .about-photo-wrap { display: flex; justify-content: center; }
   .about-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 20px; }
   .about h2 { font-size: clamp(24px, 3.2vw, 30px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 22px; }
   .about p { color: var(--ink); font-size: 15.5px; font-weight: 500; line-height: 1.65; margin-bottom: 16px; max-width: 600px; border-left: 2px solid var(--gold); padding-left: 20px; }
@@ -286,7 +288,12 @@
   @media (max-width: 780px) { .segment-grid { grid-template-columns: 1fr; } }
 
   /* Founder photo */
-  .about-photo { width: 88px; height: 88px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 2px solid var(--gold); }
+  .about-photo { width: 100%; max-width: 280px; aspect-ratio: 4/5; object-fit: cover; border-radius: 12px; display: block; }
+  @media (max-width: 720px) {
+    .about-grid { grid-template-columns: 1fr; gap: 24px; }
+    .about-photo-wrap { order: -1; }
+    .about-photo { max-width: 200px; }
+  }
 
   /* ChatGPT comparison */
   .versus { padding: 40px 0 88px; border-top: 1px solid var(--line); }
@@ -563,11 +570,17 @@
     </section>
 
     <section class="about">
-      <img src="dee-photo.jpg" alt="Dee Boswell-Buck" class="about-photo">
-      <h2>Who's behind it</h2>
-      <p>I'm <strong>Dee Boswell-Buck</strong>, LinkedIn Visibility Strategist for entrepreneurs and small businesses across Canada. I've spent years coaching business owners 1-on-1 and inside my Content LAB&trade; community on what actually works on LinkedIn, not what used to work. Unsilenced is that system, built to stay current as LinkedIn changes.</p>
-      <p>It's AI, but it's not copy and paste. Every headline, post, and message it creates comes from your own business and how you actually talk. You edit it before it goes out, so it never reads like a template.</p>
-      <p style="margin-top:24px"><a href="#pricing" class="link-cta">See pricing</a></p>
+      <div class="about-grid">
+        <div class="about-text">
+          <h2>Who's behind it</h2>
+          <p>I'm <strong>Dee Boswell-Buck</strong>, LinkedIn Visibility Strategist for entrepreneurs and small businesses across Canada. I've spent years coaching business owners 1-on-1 and inside my Content LAB&trade; community on what actually works on LinkedIn, not what used to work. Unsilenced is that system, built to stay current as LinkedIn changes.</p>
+          <p>It's AI, but it's not copy and paste. Every headline, post, and message it creates comes from your own business and how you actually talk. You edit it before it goes out, so it never reads like a template.</p>
+          <p style="margin-top:24px"><a href="#pricing" class="link-cta">See pricing</a></p>
+        </div>
+        <div class="about-photo-wrap">
+          <img src="dee-photo.jpg" alt="Dee Boswell-Buck" class="about-photo">
+        </div>
+      </div>
     </section>
   </div>
 
