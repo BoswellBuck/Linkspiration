@@ -168,7 +168,7 @@
   .pain strong { color: var(--gold); font-weight: 700; }
 
   /* Rows: the 01/02/03 benefit overview */
-  .rows { padding: 32px 0 40px; }
+  .rows { padding: 16px 0 40px; }
   .row { display: grid; grid-template-columns: 60px 1fr; gap: 24px; padding: 28px 0; border-bottom: 1px solid var(--line); align-items: start; }
   .row .num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--gold); padding-top: 4px; }
   .row h3 { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px; }
@@ -229,8 +229,67 @@
   }
   a:focus-visible, .btn-invert:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 
+  /* This is for you if... */
+  .qualify { padding: 72px 0 40px; border-top: 1px solid var(--line); }
+  .qualify .wrap { max-width: 700px; }
+  .qualify-eyebrow { color: var(--navy); margin-bottom: 24px; }
+  .qualify h2 { font-size: clamp(24px, 3.2vw, 32px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 30px; }
+  .qualify-list { list-style: none; }
+  .qualify-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15.5px; font-weight: 500; color: var(--ink); padding: 12px 0; border-bottom: 1px solid var(--line); line-height: 1.5; }
+  .qualify-list li:last-child { border-bottom: none; }
+  .qualify-list li::before { content: '✓'; color: var(--gold-deep); font-weight: 700; flex-shrink: 0; }
+
+  /* Unique features */
+  .unique { padding: 8px 0 32px; }
+  .unique-head { max-width: 620px; margin-bottom: 24px; }
+  .unique-head h2 { font-size: clamp(24px, 3.2vw, 32px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 12px; }
+  .unique-head p { color: var(--ink-soft); font-size: 15.5px; font-weight: 500; }
+  .unique-item { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; padding: 32px 0; border-bottom: 1px solid var(--line); }
+  .unique-item:last-child { border-bottom: none; padding-bottom: 8px; }
+  .unique-item:nth-child(even) .unique-text { order: 2; }
+  .unique-tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; color: var(--gold-deep); margin-bottom: 10px; }
+  .unique-text h3 { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 10px; }
+  .unique-text p { font-size: 14.5px; font-weight: 500; line-height: 1.6; color: var(--ink); }
+  @media (max-width: 720px) {
+    .unique-item { grid-template-columns: 1fr; gap: 20px; padding: 32px 0; }
+    .unique-item:nth-child(even) .unique-text { order: 0; }
+  }
+
+  /* Mockup previews: stylized, not real screenshots, deliberately partial */
+  .mockup { background: var(--card-bg); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+  .mockup-bar { display: flex; gap: 6px; margin-bottom: 16px; }
+  .mockup-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+  .mockup-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; margin-bottom: 14px; }
+  .mockup-field { background: var(--white); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; font-size: 13px; color: var(--ink-soft); }
+  .mockup-field.filled { color: var(--ink); font-weight: 500; }
+  .mockup-fade { position: relative; }
+  .mockup-fade::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 40%; background: linear-gradient(to bottom, transparent, var(--card-bg)); border-radius: 0 0 12px 12px; }
+  .mockup-pill { display: inline-flex; align-items: center; gap: 6px; background: var(--white); border: 1px solid var(--line); border-radius: 20px; padding: 6px 12px; font-size: 12px; color: var(--ink); margin: 3px; }
+
+  /* Give the redline example cards the same app-window chrome as the mockups, for one consistent visual language across the page */
+  .redline .mockup-bar { margin-bottom: 18px; }
+
+  /* Audience before/after: not a sentence-level redline, a vague-to-structured transformation */
+  .audience-example { padding: 8px 0 32px; }
+  .audience-head { max-width: 640px; margin-bottom: 40px; }
+  .audience-head h2 { font-size: clamp(24px, 3.2vw, 32px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 12px; }
+  .audience-head p { color: var(--ink-soft); font-size: 15.5px; font-weight: 500; }
+  .audience-before { font-family: 'Fraunces', serif; font-style: italic; font-size: 16px; color: var(--ink-soft); background: var(--card-bg); border-left: 3px solid var(--line); border-radius: 8px; padding: 18px 22px; margin-bottom: 8px; line-height: 1.6; }
+  .audience-arrow { font-family: 'IBM Plex Mono', monospace; color: var(--gold-deep); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; margin: 16px 0; display: block; }
+  .segment-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .segment-card { background: var(--white); border: 1.5px solid var(--ink); border-radius: 10px; padding: 20px; }
+  .segment-card.partner { border-style: dashed; border-color: var(--border-mid, var(--line)); }
+  .segment-name { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .segment-desc { font-size: 13px; color: var(--ink-soft); font-weight: 500; line-height: 1.5; margin-bottom: 12px; }
+  .segment-keywords { display: flex; flex-wrap: wrap; gap: 6px; }
+  .segment-keyword { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; background: var(--gold-pale); color: var(--gold-deep); border-radius: 4px; padding: 3px 8px; font-weight: 700; }
+  @media (max-width: 780px) { .segment-grid { grid-template-columns: 1fr; } }
+
+  /* Founder photo */
+  .about-photo { width: 88px; height: 88px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 2px solid var(--gold); }
+
   /* ChatGPT comparison */
-  .versus { padding: 88px 0; border-top: 1px solid var(--line); }
+  .versus { padding: 40px 0 88px; border-top: 1px solid var(--line); }
   .versus .wrap { max-width: 780px; }
   .versus-eyebrow { color: var(--navy); margin-bottom: 20px; }
   .versus h2 { font-size: clamp(24px, 3.2vw, 32px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 40px; max-width: 600px; }
@@ -269,7 +328,7 @@
   .price-signin-note a { color: var(--gold); font-weight: 700; text-decoration: underline; }
 
   /* FAQ */
-  .faq { padding: 88px 0; border-top: 1px solid var(--line); }
+  .faq { padding: 40px 0 88px; border-top: 1px solid var(--line); }
   .faq .wrap { max-width: 680px; }
   .faq-eyebrow { color: var(--navy); margin-bottom: 24px; }
   .faq h2 { font-size: clamp(24px, 3.2vw, 30px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 32px; }
@@ -313,6 +372,7 @@
         <a href="#how-it-works" class="link-cta">See how it works</a>
         <p style="font-size:13px;color:var(--ink-soft);margin-top:14px">No writing skills or tech experience needed.</p>
         <div class="redline">
+          <div class="mockup-bar"><div class="mockup-dot"></div><div class="mockup-dot"></div><div class="mockup-dot"></div></div>
           <span class="redline-tag">Headline</span>
           <div class="li-header">
             <div class="li-avatar">JR</div>
@@ -342,6 +402,7 @@
         <p>Small changes, real difference in who notices and who reaches out.</p>
       </div>
       <div class="redline">
+        <div class="mockup-bar"><div class="mockup-dot"></div><div class="mockup-dot"></div><div class="mockup-dot"></div></div>
         <span class="redline-tag">Post</span>
         <div class="li-header">
           <div class="li-avatar">JR</div>
@@ -355,6 +416,7 @@
         <div class="redline-after">The best professional development I ever ran had one slide and no PowerPoint. As an educational consultant, this is the format I keep coming back to. Simple beats polished, every time...</div>
       </div>
       <div class="redline">
+        <div class="mockup-bar"><div class="mockup-dot"></div><div class="mockup-dot"></div><div class="mockup-dot"></div></div>
         <span class="redline-tag">Outreach message</span>
         <div class="li-header">
           <div class="li-avatar">JR</div>
@@ -377,6 +439,20 @@
       <p>No idea what to post. Running out of things to say. Worried you'll sound salesy. Posting and hearing nothing back.</p>
       <p>Not knowing what to post is just the symptom. The real issues run deeper: a profile that doesn't say what you actually do, no clear sense of who you should be connecting with, content going out with no plan behind it, conversations that never turn into clients.</p>
       <p>Posting more isn't the fix. <strong>Having a system is.</strong></p>
+    </div>
+  </section>
+
+  <section class="qualify">
+    <div class="wrap">
+      <div class="qualify-eyebrow mono">Is this you?</div>
+      <h2>This is for you if...</h2>
+      <ul class="qualify-list">
+        <li>You're a business owner, coach, or consultant, and LinkedIn should be bringing you clients, not just likes.</li>
+        <li>You know your business inside and out, but freeze up trying to explain it in a headline or a post.</li>
+        <li>You've tried posting consistently before and stopped because nothing came from it.</li>
+        <li>You want inbound messages from the right people, not just more followers.</li>
+        <li>You'd rather have a real system running in the background than start from a blank page every week.</li>
+      </ul>
     </div>
   </section>
 
@@ -412,13 +488,89 @@
       </div>
     </div>
 
+    <section class="audience-example">
+      <div class="audience-head">
+        <h2>Finding the right people to grow your network with</h2>
+        <p>Not a bigger network. The right one.</p>
+      </div>
+      <div class="audience-before">"Just... other business owners, I guess? Maybe school leaders? I post and hope the right people see it."</div>
+      <span class="audience-arrow">becomes</span>
+      <div class="segment-grid">
+        <div class="segment-card">
+          <div class="segment-name">School Administrators</div>
+          <div class="segment-desc">Principals and vice-principals trying to reduce new-teacher turnover.</div>
+          <div class="segment-keywords">
+            <span class="segment-keyword">school principal</span>
+            <span class="segment-keyword">new teacher retention</span>
+          </div>
+        </div>
+        <div class="segment-card">
+          <div class="segment-name">Mentorship Coordinators</div>
+          <div class="segment-desc">Leading onboarding and mentorship programs for new teachers.</div>
+          <div class="segment-keywords">
+            <span class="segment-keyword">teacher mentorship</span>
+            <span class="segment-keyword">onboarding coordinator</span>
+          </div>
+        </div>
+        <div class="segment-card partner">
+          <div class="segment-name">Instructional Coaches</div>
+          <div class="segment-desc">Referral partners, not prospects, for mutual client referrals.</div>
+          <div class="segment-keywords">
+            <span class="segment-keyword">instructional coach</span>
+            <span class="segment-keyword">PD consultant</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="unique">
+      <div class="unique-head">
+        <h2>Built with a few things you won't find in a generic AI tool</h2>
+        <p>Not just posts, the whole system remembers how you talk and what's actually happened in your business.</p>
+      </div>
+
+      <div class="unique-item">
+        <div class="unique-text">
+          <div class="unique-tag">Voice Matching</div>
+          <h3>Sounds like you, not a generic AI tone</h3>
+          <p>Answer a few quick questions or paste a couple of writing samples once, and every headline, post, and message it generates after that is built from how you actually talk, not a template everyone else is using too.</p>
+        </div>
+        <div class="mockup">
+          <div class="mockup-bar"><div class="mockup-dot"></div><div class="mockup-dot"></div><div class="mockup-dot"></div></div>
+          <div class="mockup-label">Voice Matching</div>
+          <div class="mockup-field filled">🎙️ A few quick questions about how you write</div>
+          <div class="mockup-field">📝 Paste a couple of writing samples</div>
+          <div class="mockup-field" style="opacity:.6">Skip for now</div>
+        </div>
+      </div>
+
+      <div class="unique-item">
+        <div class="unique-text">
+          <div class="unique-tag">The Notebook</div>
+          <h3>Never lose a good story again</h3>
+          <p>Client wins, offhand comments, moments worth remembering, capture them the second they happen, right from your phone. Your posts can pull from something real instead of a made-up example.</p>
+        </div>
+        <div class="mockup mockup-fade">
+          <div class="mockup-bar"><div class="mockup-dot"></div><div class="mockup-dot"></div><div class="mockup-dot"></div></div>
+          <div class="mockup-label">The Notebook</div>
+          <div class="mockup-field filled">"Client went from 200 to 3,000 profile views in..."</div>
+          <div class="mockup-field filled">"Told me she almost didn't message me because..."</div>
+          <div style="margin-top:12px">
+            <span class="mockup-pill">client win</span><span class="mockup-pill">launch</span><span class="mockup-pill">lesson learned</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="about">
+      <img src="dee-photo.jpg" alt="Dee Boswell-Buck" class="about-photo">
       <h2>Who's behind it</h2>
       <p>I'm <strong>Dee Boswell-Buck</strong>, LinkedIn Visibility Strategist for entrepreneurs and small businesses across Canada. I've spent years coaching business owners 1-on-1 and inside my Content LAB&trade; community on what actually works on LinkedIn, not what used to work. Unsilenced is that system, built to stay current as LinkedIn changes.</p>
       <p>It's AI, but it's not copy and paste. Every headline, post, and message it creates comes from your own business and how you actually talk. You edit it before it goes out, so it never reads like a template.</p>
       <p style="margin-top:24px"><a href="#pricing" class="link-cta">See pricing</a></p>
     </section>
   </div>
+
 
   <section class="invert">
     <div class="wrap invert-inner">
