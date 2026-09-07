@@ -539,6 +539,14 @@ const supabaseClient = (typeof supabase !== 'undefined' && SUPABASE_URL.startsWi
   : null;
 
 let currentUser = null;
+let generationInFlight = false;
+let tabWasBackgroundedDuringGeneration = false;
+document.addEventListener('visibilitychange', () => {
+  if(document.hidden && generationInFlight) tabWasBackgroundedDuringGeneration = true;
+});
+function backgroundInterruptionMessage(){
+  return `<div class="inline-error">Looks like you switched to another app while this was generating, phones often interrupt long requests when that happens. Try again, and if you can, stay on this tab until it finishes, that should get you a clean result.</div>`;
+}
 let showCheckinPrompt = false; // set true only by an actual first-ever Profile generation completing, never by page load, so existing members who already generated their profile before this feature existed can never trigger it retroactively
 let voiceProfile = null; // { voice_profile, voice_profile_source, voice_profile_updated_at, voice_profile_history } or null
 let voiceUIMode = 'summary'; // 'summary' | 'choose' | 'samples' | 'questionnaire'
@@ -2696,7 +2704,7 @@ async function generateProfile(isRegenerate){
   const btn = document.getElementById('profile-gen-btn');
   const box = document.getElementById('profile-output');
   btn.disabled = true;
-  box.innerHTML = generatingHtml("Drafting your full profile strategy. This one's thorough, headline, banner, About, Experience, Featured, Skills, and Influencers, so it typically takes a minute or two...");
+  box.innerHTML = generatingHtml("Drafting your full profile strategy. This one's thorough, headline, banner, About, Experience, Featured, Skills, and Influencers, so it typically takes a minute or two. If you're on your phone, staying on this tab until it finishes helps avoid it getting interrupted...");
   const notes = document.getElementById('dee-notes-profile').value;
   state.deeNotes.profile = notes;
 
@@ -2760,6 +2768,8 @@ Use - for list items within a module. No preamble, no closing remarks, no markdo
     { at: 70000, text: "Almost there. Thorough profiles genuinely take a couple of minutes, thanks for hanging in there." },
     { at: 120000, text: "Still going. This can occasionally take up to three minutes for a full profile." }
   ]);
+  generationInFlight = true;
+  tabWasBackgroundedDuringGeneration = false;
   try{
     const [headlineData, bannerData, restText] = await Promise.all([
       callClaudeTool(headlinePrompt, HEADLINE_TOOL, 2500),
@@ -2780,9 +2790,12 @@ Use - for list items within a module. No preamble, no closing remarks, no markdo
   }catch(e){
     console.error('Profile generation error:', e);
     stopWaitMessages(waitTimers);
-    box.innerHTML = `<div class="inline-error">Something went wrong generating this. This is usually temporary, try again in a moment. If it keeps happening, let Dee know.</div>`;
+    box.innerHTML = tabWasBackgroundedDuringGeneration
+      ? backgroundInterruptionMessage()
+      : `<div class="inline-error">Something went wrong generating this. This is usually temporary, try again in a moment. If it keeps happening, let Dee know.</div>`;
     btn.disabled = false;
   }
+  generationInFlight = false;
 }
 
 function completeProfile(){ goTo('content'); }
@@ -2985,6 +2998,8 @@ No preamble, no closing remarks, no markdown bold asterisks.${voiceProfileInject
     { at: 35000, text: "Almost there. Five posts plus a CTA strategy takes a little longer than one." }
   ]);
   try{
+    generationInFlight = true;
+    tabWasBackgroundedDuringGeneration = false;
     const result = await callClaude(prompt, 4200);
     stopWaitMessages(waitTimers);
     state.outputs.content = result;
@@ -2995,9 +3010,12 @@ No preamble, no closing remarks, no markdown bold asterisks.${voiceProfileInject
   }catch(e){
     console.error('Content generation error:', e);
     stopWaitMessages(waitTimers);
-    box.innerHTML = `<div class="inline-error">Something went wrong generating this. This is usually temporary, try again in a moment. If it keeps happening, let Dee know.</div>`;
+    box.innerHTML = tabWasBackgroundedDuringGeneration
+      ? backgroundInterruptionMessage()
+      : `<div class="inline-error">Something went wrong generating this. This is usually temporary, try again in a moment. If it keeps happening, let Dee know.</div>`;
     btn.disabled = false;
   }
+  generationInFlight = false;
 }
 
 function renderAudience(){
@@ -3093,6 +3111,8 @@ Use - for list items outside of the message scripts themselves.`;
     { at: 15000, text: "Still working. Mapping ideal clients, search keywords, and outreach scripts..." }
   ]);
   try{
+    generationInFlight = true;
+    tabWasBackgroundedDuringGeneration = false;
     const result = await callClaude(prompt, 4300);
     stopWaitMessages(waitTimers);
     state.outputs.audience = result;
@@ -3103,9 +3123,12 @@ Use - for list items outside of the message scripts themselves.`;
   }catch(e){
     console.error('Audience generation error:', e);
     stopWaitMessages(waitTimers);
-    box.innerHTML = `<div class="inline-error">Something went wrong generating this. This is usually temporary, try again in a moment. If it keeps happening, let Dee know.</div>`;
+    box.innerHTML = tabWasBackgroundedDuringGeneration
+      ? backgroundInterruptionMessage()
+      : `<div class="inline-error">Something went wrong generating this. This is usually temporary, try again in a moment. If it keeps happening, let Dee know.</div>`;
     btn.disabled = false;
   }
+  generationInFlight = false;
 }
 
 function renderOffline(){
@@ -3163,6 +3186,8 @@ Use - for list items. No preamble, no closing remarks, no markdown bold asterisk
     { at: 15000, text: "Still working. Building the conversion plan and message scripts..." }
   ]);
   try{
+    generationInFlight = true;
+    tabWasBackgroundedDuringGeneration = false;
     const result = await callClaude(prompt, 2200);
     stopWaitMessages(waitTimers);
     state.outputs.offline = result;
@@ -3172,9 +3197,12 @@ Use - for list items. No preamble, no closing remarks, no markdown bold asterisk
   }catch(e){
     console.error('Offline generation error:', e);
     stopWaitMessages(waitTimers);
-    box.innerHTML = `<div class="inline-error">Something went wrong generating this. This is usually temporary, try again in a moment. If it keeps happening, let Dee know.</div>`;
+    box.innerHTML = tabWasBackgroundedDuringGeneration
+      ? backgroundInterruptionMessage()
+      : `<div class="inline-error">Something went wrong generating this. This is usually temporary, try again in a moment. If it keeps happening, let Dee know.</div>`;
     btn.disabled = false;
   }
+  generationInFlight = false;
 }
 
 const NOTE_SUGGESTIONS = {
