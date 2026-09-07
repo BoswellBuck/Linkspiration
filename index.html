@@ -170,12 +170,12 @@
   /* Rows: the 01/02/03 benefit overview */
   .rows { padding: 16px 0 40px; }
   .row { display: grid; grid-template-columns: 60px 1fr; gap: 24px; padding: 28px 0; border-bottom: 1px solid var(--line); align-items: start; }
-  .row .num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--gold); padding-top: 4px; }
+  .row .num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 700; color: var(--gold); padding-top: 4px; }
   .row h3 { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px; }
   .row p { font-size: 15px; font-weight: 500; line-height: 1.6; color: var(--ink); max-width: 560px; }
 
   /* See the difference: post + outreach examples */
-  .compare { padding: 0 0 40px; }
+  .compare { padding: 32px 0 40px; }
   .compare-head { max-width: 620px; margin-bottom: 44px; }
   .compare-head h2 { font-size: clamp(26px, 3.4vw, 34px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 12px; }
   .compare-head p { color: var(--ink-soft); font-size: 15.5px; font-weight: 500; }
@@ -189,6 +189,8 @@
   .about-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 20px; }
   .about h2 { font-size: clamp(24px, 3.2vw, 30px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 22px; }
   .about p { color: var(--ink); font-size: 15.5px; font-weight: 500; line-height: 1.65; margin-bottom: 16px; max-width: 600px; border-left: 2px solid var(--gold); padding-left: 20px; }
+  .value-block { padding: 8px 0 32px; }
+  .value-block p { color: var(--ink); font-size: 15.5px; font-weight: 500; line-height: 1.65; margin-bottom: 16px; max-width: 620px; border-left: 2px solid var(--gold); padding-left: 20px; }
   .about p:last-child { margin-bottom: 0; }
   .about strong { color: var(--gold); font-weight: 700; }
 
@@ -249,7 +251,7 @@
   .unique-item { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; padding: 32px 0; border-bottom: 1px solid var(--line); }
   .unique-item:last-child { border-bottom: none; padding-bottom: 8px; }
   .unique-item:nth-child(even) .unique-text { order: 2; }
-  .unique-tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; color: var(--gold-deep); margin-bottom: 10px; }
+  .unique-tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--gold-deep); margin-bottom: 10px; }
   .unique-text h3 { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 10px; }
   .unique-text p { font-size: 14.5px; font-weight: 500; line-height: 1.6; color: var(--ink); }
   @media (max-width: 720px) {
@@ -302,7 +304,7 @@
   .versus h2 { font-size: clamp(24px, 3.2vw, 32px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 40px; max-width: 600px; }
   .versus-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
   .versus-col h3 { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; margin-bottom: 18px; }
-  .versus-col.diy h3 { color: var(--ink-soft); }
+  .versus-col.diy h3 { color: var(--ink-soft); font-weight: 700; }
   .versus-col.us h3 { color: var(--gold-deep); font-weight: 700; font-size: 13px; margin-top: 6px; padding-top: 14px; }
   .versus-col ul { list-style: none; }
   .versus-col li { font-size: 14.5px; line-height: 1.6; padding: 10px 0; border-bottom: 1px solid var(--line); }
@@ -349,7 +351,7 @@
   .faq-a p { font-size: 14.5px; line-height: 1.65; color: var(--ink-soft); padding-bottom: 22px; max-width: 580px; }
   .faq-cta { text-align: center; margin-top: 48px; }
   .btn-faq-cta { display: inline-block; background: var(--gold); color: var(--ink); border: none; padding: 16px 34px; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none; border-radius: 8px; }
-  .faq-cta p { font-size: 12.5px; color: var(--ink-soft); margin-top: 12px; }
+  .faq-cta p { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); margin-top: 12px; }
 
   @media (max-width: 720px) {
     .price-card { padding: 32px 26px; }
@@ -375,7 +377,7 @@
       <div class="hero-left">
         <div class="eyebrow mono">For entrepreneurs who are done being overlooked</div>
         <h1>Invisible on LinkedIn isn't a personality trait. <span id="tw-visible" aria-hidden="true"><span id="tw-text"></span><span id="tw-cursor"></span></span><span class="sr-only">It's a setting you can change.</span></h1>
-        <p class="sub">Answer a few questions about your business once. Unsilenced builds your headline, your posts, and your outreach messages from it, in your own voice, so the right people actually notice you and reach out.</p>
+        <p class="sub">Turn LinkedIn into a system for getting known by the right people and creating more opportunities for your business. Unsilenced helps you clarify what to say, create strategic content, and know who to connect with, so you're not posting and hoping something happens.</p>
         <a href="#how-it-works" class="link-cta">See how it works</a>
         <p style="font-size:13px;color:var(--ink-soft);margin-top:14px">No writing skills or tech experience needed.</p>
         <div class="redline">
@@ -396,7 +398,7 @@
       <div class="hero-right">
         <div class="stat-block">
           <div class="stat-number">20</div>
-          <div class="stat-label">members already building their presence in the LAB</div>
+          <div class="stat-label">founding members already getting known with Unsilenced</div>
         </div>
       </div>
     </div>
@@ -406,7 +408,7 @@
     <section class="compare">
       <div class="compare-head">
         <h2>See the difference</h2>
-        <p>Small changes, real difference in who notices and who reaches out.</p>
+        <p>See how strategy changes what you say, who notices, and who you connect with.</p>
       </div>
       <div class="redline">
         <div class="mockup-bar"><div class="mockup-dot"></div><div class="mockup-dot"></div><div class="mockup-dot"></div></div>
@@ -445,7 +447,7 @@
       <h2>You're not bad at LinkedIn. You just haven't had a real strategy.</h2>
       <p>No idea what to post. Running out of things to say. Worried you'll sound salesy. Posting and hearing nothing back.</p>
       <p>Not knowing what to post is just the symptom. The real issues run deeper: a profile that doesn't say what you actually do, no clear sense of who you should be connecting with, content going out with no plan behind it, conversations that never turn into clients.</p>
-      <p>Posting more isn't the fix. <strong>Having a system is.</strong></p>
+      <p>Posting more isn't the fix. <strong>Connecting your positioning, content and audience is.</strong></p>
     </div>
   </section>
 
@@ -454,16 +456,19 @@
       <div class="qualify-eyebrow mono">Is this you?</div>
       <h2>This is for you if...</h2>
       <ul class="qualify-list">
-        <li>You're a business owner, coach, or consultant, and LinkedIn should be bringing you clients, not just likes.</li>
-        <li>You know your business inside and out, but freeze up trying to explain it in a headline or a post.</li>
-        <li>You've tried posting consistently before and stopped because nothing came from it.</li>
-        <li>You want inbound messages from the right people, not just more followers.</li>
-        <li>You'd rather have a real system running in the background than start from a blank page every week.</li>
+        <li>You're a business owner, coach, or consultant, and LinkedIn should be creating business opportunities, not just likes.</li>
+        <li>You know your business inside and out, but struggle to turn what you know into clear positioning and content.</li>
+        <li>You've tried posting consistently, but it hasn't led to enough of the right conversations.</li>
+        <li>You want a clear plan for what to say, who to connect with, and how to turn those relationships into opportunities.</li>
       </ul>
     </div>
   </section>
 
   <div class="wrap">
+    <div class="audience-head" style="margin-bottom:28px">
+      <h2>From being overlooked to creating business opportunities</h2>
+      <p>Unsilenced connects the four parts of LinkedIn that usually get treated separately.</p>
+    </div>
     <div class="rows" id="how-it-works">
       <div class="row">
         <div class="num">01</div>
@@ -490,14 +495,23 @@
         <div class="num">04</div>
         <div>
           <h3>Turning Conversations Into Clients</h3>
-          <p>Scripts for turning a good DM into a real discovery call, so visibility turns into actual business.</p>
+          <p>A plan for moving the right conversations beyond LinkedIn and toward a discovery call, referral, collaboration, or other business opportunity.</p>
         </div>
       </div>
     </div>
 
+    <section class="value-block">
+      <div class="audience-head">
+        <h2>Come back with a next move, not another blank page.</h2>
+      </div>
+      <p>Your LinkedIn strategy isn't finished when your profile is updated.</p>
+      <p>As your business grows, use Unsilenced to turn new ideas and experiences into content, stay clear on who you're trying to reach, prepare outreach, capture stories in your Notebook, and keep your LinkedIn activity connected to your business goals.</p>
+      <p>It's a system you keep using, not an audit you complete once.</p>
+    </section>
+
     <section class="audience-example">
       <div class="audience-head">
-        <h2>Finding the right people to grow your network with</h2>
+        <h2>Know exactly who belongs in your LinkedIn network</h2>
         <p>Not a bigger network. The right one.</p>
       </div>
       <div class="audience-before">"Just... other business owners, I guess? Maybe school leaders? I post and hope the right people see it."</div>
@@ -573,7 +587,8 @@
       <div class="about-grid">
         <div class="about-text">
           <h2>Who's behind it</h2>
-          <p>I'm <strong>Dee Boswell-Buck</strong>, LinkedIn Visibility Strategist for entrepreneurs and small businesses across Canada. I've spent years coaching business owners 1-on-1 and inside my Content LAB&trade; community on what actually works on LinkedIn, not what used to work. Unsilenced is that system, built to stay current as LinkedIn changes.</p>
+          <p>I'm <strong>Dee Boswell-Buck</strong>, a LinkedIn Visibility Strategist who has spent years helping entrepreneurs turn LinkedIn into more than a place to post. Through my 1-on-1 work, workshops and Content LAB, I kept seeing the same problem: business owners didn't need more content ideas. They needed their positioning, content, audience and relationship-building working together.</p>
+          <p>Unsilenced turns that strategy into a system you can use week after week.</p>
           <p>It's AI, but it's not copy and paste. Every headline, post, and message it creates comes from your own business and how you actually talk. You edit it before it goes out, so it never reads like a template.</p>
           <p style="margin-top:24px"><a href="#pricing" class="link-cta">See pricing</a></p>
         </div>
@@ -596,7 +611,7 @@
         <div class="scope-item"><span class="label">Audience &amp; outreach</span><span class="scope-divider"></span></div>
         <div class="scope-item"><span class="label">Offline conversion</span></div>
       </div>
-      <p class="reframe-line">This is how real conversations turn into real business. It's not a content tool. It's a full visibility system.</p>
+      <p class="reframe-line">This is how real conversations turn into real business. It's not another content generator. It's a LinkedIn strategy built to help the right people understand what you do, remember you, and start the right conversations.</p>
       <a href="#pricing" class="btn-invert">See pricing</a>
     </div>
   </section>
@@ -604,7 +619,7 @@
   <section class="versus">
     <div class="wrap">
       <div class="versus-eyebrow mono">The honest comparison</div>
-      <h2>What happens when you just open ChatGPT and start typing</h2>
+      <h2>Why not just use ChatGPT?</h2>
       <div class="versus-grid">
         <div class="versus-col diy">
           <h3>DIY with a chatbot</h3>
@@ -644,6 +659,7 @@
       <div class="price-card">
         <div class="price-amount" id="price-amount">$67<span>/month</span></div>
         <div class="price-annual-note" id="price-annual-note">Billed as $670 once a year</div>
+        <p style="font-size:13.5px;font-weight:600;color:var(--ink);margin-top:16px;margin-bottom:4px">Everything you need to know what to say, who to connect with, and what to do next on LinkedIn.</p>
         <ul class="price-list">
           <li>Full LinkedIn Profile Strategy, headline, About, banner, Featured, Skills, and Influencers</li>
           <li>Weekly First Posts, built from your own content pillars</li>
