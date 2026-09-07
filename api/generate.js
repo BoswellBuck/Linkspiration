@@ -10,7 +10,7 @@
 // correct modern approach for this.
 
 export const config = {
-  maxDuration: 180, // profile generation asks for a lot in one call (headlines, About, banner, featured, keywords/skills) and can take well over a minute; Vercel Pro supports up to 300s
+  maxDuration: 280, // profile generation asks for a lot in one call (headlines, About, banner, featured, keywords/skills); token budgets were increased to stop responses truncating mid-generation, so this needed headroom to match. Vercel Pro supports up to 300s
 };
 
 // Profile generation fires 3 requests to Anthropic at once (headline, banner,
