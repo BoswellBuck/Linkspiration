@@ -668,8 +668,8 @@
           <li>Voice Matching, so everything sounds like you, not a template</li>
           <li>The Notebook, to capture stories and wins as they happen</li>
         </ul>
-        <a href="https://buy.stripe.com/bJefZi3Dg0yxgia3TRdfG0O" class="btn-price" id="price-cta">Lock in $67/month</a>
-        <p class="price-access-note">You'll get access within 24 hours of payment.</p>
+        <a href="https://buy.stripe.com/bJefZi3Dg0yxgia3TRdfG0O" class="btn-price" id="price-cta">Start your 5-day free trial</a>
+        <p class="price-access-note">5 days free, then $67/month (or $670/year if you choose annual). You'll typically have access within 4-12 hours, often sooner, and you won't be charged until the trial ends.</p>
         <p class="price-note">Price returns to standard once the first 20 spots are filled.</p>
         <p class="price-signin-note">Already have an account? <a href="https://linkspiration.com/start-here.html">Sign in instead</a></p>
       </div>
@@ -713,16 +713,16 @@
 
       <div class="faq-item">
         <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
-          When do I get access after I pay?
+          When do I get access, and when do I get charged?
           <span class="icon">+</span>
         </button>
         <div class="faq-a">
-          <p>Within 24 hours. Every new account is confirmed by hand to keep things running smoothly, so you'll have your login and be ready to start well within a day of signing up.</p>
+          <p>You'll typically have access within 4-12 hours, often sooner. Every new account is confirmed by hand to keep things running smoothly. Your 5-day free trial starts from there, and you won't be charged until it ends.</p>
         </div>
       </div>
 
       <div class="faq-cta">
-        <a href="#pricing" class="btn-faq-cta">Lock in founding pricing</a>
+        <a href="#pricing" class="btn-faq-cta">Start your 5-day free trial</a>
         <p>First 20 spots, then the price goes up.</p>
       </div>
 
@@ -834,14 +834,14 @@ function setBilling(plan) {
     annualBtn.classList.add('active');
     amountEl.innerHTML = '$56<span>/month</span>';
     annualNoteEl.style.display = 'block';
-    ctaEl.textContent = 'Lock in $670/year';
+    ctaEl.textContent = 'Start your 5-day free trial';
     ctaEl.href = STRIPE_ANNUAL;
   } else {
     monthlyBtn.classList.add('active');
     annualBtn.classList.remove('active');
     amountEl.innerHTML = '$67<span>/month</span>';
     annualNoteEl.style.display = 'none';
-    ctaEl.textContent = 'Lock in $67/month';
+    ctaEl.textContent = 'Start your 5-day free trial';
     ctaEl.href = STRIPE_MONTHLY;
   }
 }
