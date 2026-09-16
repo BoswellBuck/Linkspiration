@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Unsilenced | A Visibility System for LinkedIn</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DE9H766JN7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-DE9H766JN7');
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@500&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600&display=swap" rel="stylesheet">
 <style>
@@ -379,7 +387,7 @@
         <h1>Invisible on LinkedIn isn't a personality trait. <span id="tw-visible" aria-hidden="true"><span id="tw-text"></span><span id="tw-cursor"></span></span><span class="sr-only">It's a setting you can change.</span></h1>
         <p class="sub">Turn LinkedIn into a system for getting known by the right people and creating more opportunities for your business. Unsilenced helps you clarify what to say, create strategic content, and know who to connect with, so you're not posting and hoping something happens.</p>
         <a href="#how-it-works" class="link-cta">See how it works</a>
-        <p style="font-size:13px;color:var(--ink-soft);margin-top:14px">No writing skills or tech experience needed.</p>
+        <p style="font-size:13px;color:var(--ink-soft);margin-top:14px">No writing skills or tech experience needed. Try it free for 5 days.</p>
         <div class="redline">
           <div class="mockup-bar"><div class="mockup-dot"></div><div class="mockup-dot"></div><div class="mockup-dot"></div></div>
           <span class="redline-tag">Headline</span>
@@ -590,7 +598,7 @@
           <p>I'm <strong>Dee Boswell-Buck</strong>, a LinkedIn Visibility Strategist who has spent years helping entrepreneurs turn LinkedIn into more than a place to post. Through my 1-on-1 work, workshops and Content LAB, I kept seeing the same problem: business owners didn't need more content ideas. They needed their positioning, content, audience and relationship-building working together.</p>
           <p>Unsilenced turns that strategy into a system you can use week after week.</p>
           <p>It's AI, but it's not copy and paste. Every headline, post, and message it creates comes from your own business and how you actually talk. You edit it before it goes out, so it never reads like a template.</p>
-          <p style="margin-top:24px"><a href="#pricing" class="link-cta">See pricing</a></p>
+          <p style="margin-top:24px"><a href="#pricing" class="link-cta">See pricing, 5-day free trial</a></p>
         </div>
         <div class="about-photo-wrap">
           <img src="dee-photo.jpg" alt="Dee Boswell-Buck" class="about-photo">
@@ -612,7 +620,7 @@
         <div class="scope-item"><span class="label">Offline conversion</span></div>
       </div>
       <p class="reframe-line">This is how real conversations turn into real business. It's not another content generator. It's a LinkedIn strategy built to help the right people understand what you do, remember you, and start the right conversations.</p>
-      <a href="#pricing" class="btn-invert">See pricing</a>
+      <a href="#pricing" class="btn-invert">See pricing, 5-day free trial</a>
     </div>
   </section>
 
@@ -668,7 +676,7 @@
           <li>Voice Matching, so everything sounds like you, not a template</li>
           <li>The Notebook, to capture stories and wins as they happen</li>
         </ul>
-        <a href="https://buy.stripe.com/bJefZi3Dg0yxgia3TRdfG0O" class="btn-price" id="price-cta">Start your 5-day free trial</a>
+        <a href="https://buy.stripe.com/bJefZi3Dg0yxgia3TRdfG0O" class="btn-price" id="price-cta" onclick="gtag('event', 'start_trial_click', {'plan': document.getElementById('toggle-annual').classList.contains('active') ? 'annual' : 'monthly'});">Start your 5-day free trial</a>
         <p class="price-access-note">5 days free, then $67/month (or $670/year if you choose annual). You'll typically have access within 4-12 hours, often sooner, and you won't be charged until the trial ends.</p>
         <p class="price-note">Price returns to standard once the first 20 spots are filled.</p>
         <p class="price-signin-note">Already have an account? <a href="https://linkspiration.com/start-here.html">Sign in instead</a></p>
